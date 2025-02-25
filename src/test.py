@@ -1,7 +1,13 @@
 import os
 # 升级方舟 SDK 到最新版本 pip install -U 'volcengine-python-sdk[ark]'
 from volcenginesdkarkruntime import Ark
+import sys
+# 获取当前文件的绝对路径，然后获取其上一级目录（项目根目录）
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# 现在可以导入 config 里的内容
 from config.config import ARK_API_KEY
+
 
 client = Ark(
     # 从环境变量中读取您的方舟API Key
@@ -11,7 +17,7 @@ client = Ark(
     )
 response = client.chat.completions.create(
     # 替换 <Model> 为模型的Model ID
-    model="<Model>",
+    model="deepseek-r1-distill-qwen-32b-250120",
     messages=[
         {"role": "user", "content": "我要有研究推理模型与非推理模型区别的课题，怎么体现我的专业性"}
     ]
