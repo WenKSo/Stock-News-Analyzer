@@ -1,6 +1,6 @@
 import os
 import json
-#import tushare as ts
+import tushare as ts
 import sys
 from volcenginesdkarkruntime import Ark
 
@@ -8,8 +8,8 @@ from volcenginesdkarkruntime import Ark
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # 配置 Tushare API
-# ts.set_token('your_tushare_token')
-# pro = ts.pro_api()
+ts.set_token('cf8358452d80af718113261e94f97f9b84cd02e3fd6c656dc4fe33cd')
+pro = ts.pro_api()
 
 # 配置 DeepSeek
 from config.config import ARK_API_KEY
