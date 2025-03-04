@@ -1,3 +1,8 @@
 requests
 akshare
+volcenginesdkarkruntime
 pandas
+matplotlib
+plotly
+streamlit  # 如果使用方案一
+flask  # 如果使用方案一的替代方案
