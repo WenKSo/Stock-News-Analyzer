@@ -248,6 +248,39 @@ def get_stock_data(stock_code):
                 print(f"检查股票是否上市出错: {e}")
                 is_listed = False
         
+        # 改进股票上市验证逻辑
+        # 如果不是已上市股票，返回空数据
+        if not is_listed:
+            # 再次尝试确认是否为A股股票，使用更宽松的匹配方式
+            try:
+                # 获取所有A股代码
+                stock_list = ak.stock_zh_a_spot_em()
+                # 检查纯数字代码是否在列表中
+                is_listed = code_without_market in stock_list['代码'].values
+                
+                # 如果仍然找不到，尝试不同的格式化方式
+                if not is_listed:
+                    # 尝试前缀匹配（有些股票代码可能有前导零）
+                    is_listed = any(code.endswith(code_without_market) for code in stock_list['代码'].values)
+                    
+                    # 如果仍然找不到，检查是否有实时行情数据
+                    if not is_listed and real_time_quote:
+                        is_listed = True
+                        print(f"通过实时行情数据确认股票 {stock_code} 已上市")
+                    
+                    # 如果有财务数据，也认为是上市股票
+                    if not is_listed and (financial_indicator or balance_sheet or income or cash_flow):
+                        is_listed = True
+                        print(f"通过财务数据确认股票 {stock_code} 已上市")
+                
+                print(f"最终确认股票 {code_without_market} 是否在A股上市: {is_listed}")
+            except Exception as e:
+                print(f"再次检查股票是否上市出错: {e}")
+                # 如果有价格数据，默认认为是上市股票
+                if daily_data or real_time_quote:
+                    is_listed = True
+                    print(f"通过价格数据确认股票 {stock_code} 已上市")
+        
         # 如果不是已上市股票，返回空数据
         if not is_listed:
             print(f"股票 {stock_code} 不是已上市股票，跳过数据获取")

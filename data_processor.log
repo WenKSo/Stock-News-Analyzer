@@ -1,0 +1,248 @@
+2025-03-12 15:04:10,341 - NewsDataPipeline - INFO - 正在加载配置文件: config.json
+2025-03-12 15:04:10,342 - NewsDataPipeline - INFO - 初始化数据处理器和集成器
+2025-03-12 15:04:10,374 - NewsDataIntegrator - INFO - 数据库初始化完成: news_database.db
+2025-03-12 15:04:10,374 - NewsDataPipeline - INFO - 数据处理流水线启动，间隔时间: 10 分钟
+2025-03-12 15:04:10,374 - NewsDataPipeline - INFO - 开始运行数据处理流水线...
+2025-03-12 15:04:10,375 - NewsDataPipeline - INFO - 步骤1: 处理新数据
+2025-03-12 15:04:10,375 - NewsDataProcessor - INFO - 发现 2 个新文件需要处理
+2025-03-12 15:04:10,375 - NewsDataProcessor - INFO - 正在处理文件: data/raw\example_news_data.csv
+2025-03-12 15:04:10,383 - NewsDataProcessor - INFO - 已保存处理后的数据到 data/processed\example_news_data_processed_20250312_150410.csv
+2025-03-12 15:04:10,386 - NewsDataProcessor - INFO - 已归档文件 data/raw\example_news_data.csv 到 data/archive\20250312_150410_example_news_data.csv
+2025-03-12 15:04:10,386 - NewsDataProcessor - INFO - 正在处理文件: data/raw\example_news_data.json
+2025-03-12 15:04:10,389 - NewsDataProcessor - INFO - 已保存处理后的数据到 data/processed\example_news_data_processed_20250312_150410.csv
+2025-03-12 15:04:10,392 - NewsDataProcessor - INFO - 已归档文件 data/raw\example_news_data.json 到 data/archive\20250312_150410_example_news_data.json
+2025-03-12 15:04:10,392 - NewsDataProcessor - INFO - 所有文件处理完成
+2025-03-12 15:04:10,392 - NewsDataPipeline - INFO - 步骤2: 将处理后的数据集成到数据库
+2025-03-12 15:04:10,392 - NewsDataIntegrator - INFO - 发现 1 个处理后文件需要导入
+2025-03-12 15:04:10,392 - NewsDataIntegrator - INFO - 正在导入文件: data/processed\example_news_data_processed_20250312_150410.csv
+2025-03-12 15:04:10,403 - NewsDataIntegrator - INFO - 已将 2 条记录从 data/processed\example_news_data_processed_20250312_150410.csv 导入到数据库
+2025-03-12 15:04:10,407 - NewsDataIntegrator - INFO - 已移动导入完成的文件 data/processed\example_news_data_processed_20250312_150410.csv 到 data/imported\20250312_150410_example_news_data_processed_20250312_150410.csv
+2025-03-12 15:04:10,407 - NewsDataIntegrator - INFO - 数据集成完成，共导入 2 条记录
+2025-03-12 15:04:10,407 - NewsDataPipeline - INFO - 数据处理流水线运行完成
+2025-03-12 15:17:19,025 - NewsDataPipeline - INFO - 正在加载配置文件: config.json
+2025-03-12 15:17:19,026 - NewsDataPipeline - INFO - 初始化数据处理器和集成器
+2025-03-12 15:17:19,027 - NewsDataIntegrator - INFO - 数据库初始化完成: news_database.db
+2025-03-12 15:17:19,027 - NewsDataPipeline - INFO - 数据处理流水线启动，间隔时间: 10 分钟
+2025-03-12 15:17:19,028 - NewsDataPipeline - INFO - 开始运行数据处理流水线...
+2025-03-12 15:17:19,028 - NewsDataPipeline - INFO - 步骤1: 处理新数据
+2025-03-12 15:17:19,028 - NewsDataProcessor - INFO - 没有新文件需要处理
+2025-03-12 15:17:19,028 - NewsDataPipeline - INFO - 步骤2: 将处理后的数据集成到数据库
+2025-03-12 15:17:19,028 - NewsDataIntegrator - INFO - 没有新的处理后文件需要导入
+2025-03-12 15:17:19,029 - NewsDataPipeline - INFO - 数据处理流水线运行完成
+2025-03-12 15:20:49,120 - NewsDataPipeline - INFO - 正在加载配置文件: config.json
+2025-03-12 15:20:49,120 - NewsDataPipeline - INFO - 初始化数据处理器和集成器
+2025-03-12 15:20:49,122 - NewsDataIntegrator - INFO - 数据库初始化完成: news_database.db
+2025-03-12 15:20:49,122 - NewsDataPipeline - INFO - 数据处理流水线启动，间隔时间: 10 分钟
+2025-03-12 15:20:49,122 - NewsDataPipeline - INFO - 开始运行数据处理流水线...
+2025-03-12 15:20:49,122 - NewsDataPipeline - INFO - 步骤1: 处理新数据
+2025-03-12 15:20:49,122 - NewsDataProcessor - INFO - 发现 1 个新文件需要处理
+2025-03-12 15:20:49,122 - NewsDataProcessor - INFO - 正在处理文件: data/raw\财经滚动新闻_新浪网20250312152026.json
+2025-03-12 15:20:49,126 - NewsDataProcessor - INFO - 已保存处理后的数据到 data/processed\财经滚动新闻_新浪网20250312152026_processed_20250312_152049.csv
+2025-03-12 15:20:49,138 - NewsDataProcessor - INFO - 已归档文件 data/raw\财经滚动新闻_新浪网20250312152026.json 到 data/archive\20250312_152049_财经滚动新闻_新浪网20250312152026.json
+2025-03-12 15:20:49,138 - NewsDataProcessor - INFO - 所有文件处理完成
+2025-03-12 15:20:49,138 - NewsDataPipeline - INFO - 步骤2: 将处理后的数据集成到数据库
+2025-03-12 15:20:49,138 - NewsDataIntegrator - INFO - 发现 1 个处理后文件需要导入
+2025-03-12 15:20:49,139 - NewsDataIntegrator - INFO - 正在导入文件: data/processed\财经滚动新闻_新浪网20250312152026_processed_20250312_152049.csv
+2025-03-12 15:20:49,141 - NewsDataIntegrator - ERROR - 导入数据到数据库时出错: table news_articles has no column named 标题
+2025-03-12 15:20:49,141 - NewsDataIntegrator - INFO - 数据集成完成，共导入 0 条记录
+2025-03-12 15:20:49,141 - NewsDataPipeline - INFO - 数据处理流水线运行完成
+2025-03-12 15:43:41,230 - NewsDataPipeline - INFO - 正在加载配置文件: config.json
+2025-03-12 15:43:41,230 - NewsDataPipeline - INFO - 初始化数据处理器和集成器
+2025-03-12 15:43:41,230 - NewsDataIntegrator - INFO - 数据库初始化完成: news_database.db
+2025-03-12 15:43:41,230 - NewsDataPipeline - INFO - 数据处理流水线启动，间隔时间: 10 分钟
+2025-03-12 15:43:41,230 - NewsDataPipeline - INFO - 开始运行数据处理流水线...
+2025-03-12 15:43:41,230 - NewsDataPipeline - INFO - 步骤1: 处理新数据
+2025-03-12 15:43:41,230 - NewsDataProcessor - INFO - 发现 2 个新文件需要处理
+2025-03-12 15:43:41,230 - NewsDataProcessor - INFO - 正在处理文件: data/raw\财经滚动新闻_新浪网20250312153013.json
+2025-03-12 15:43:41,236 - NewsDataProcessor - INFO - 已保存处理后的数据到 data/processed\财经滚动新闻_新浪网20250312153013_processed_20250312_154341.csv
+2025-03-12 15:43:41,240 - NewsDataProcessor - INFO - 已归档文件 data/raw\财经滚动新闻_新浪网20250312153013.json 到 data/archive\20250312_154341_财经滚动新闻_新浪网20250312153013.json
+2025-03-12 15:43:41,240 - NewsDataProcessor - INFO - 正在处理文件: data/raw\财经滚动新闻_新浪网20250312153958.json
+2025-03-12 15:43:41,244 - NewsDataProcessor - WARNING - 无法转换publish_time字段为日期时间格式
+2025-03-12 15:43:41,246 - NewsDataProcessor - INFO - 已保存处理后的数据到 data/processed\财经滚动新闻_新浪网20250312153958_processed_20250312_154341.csv
+2025-03-12 15:43:41,248 - NewsDataProcessor - INFO - 已归档文件 data/raw\财经滚动新闻_新浪网20250312153958.json 到 data/archive\20250312_154341_财经滚动新闻_新浪网20250312153958.json
+2025-03-12 15:43:41,248 - NewsDataProcessor - INFO - 所有文件处理完成
+2025-03-12 15:43:41,248 - NewsDataPipeline - INFO - 步骤2: 将处理后的数据集成到数据库
+2025-03-12 15:43:41,248 - NewsDataIntegrator - INFO - 发现 3 个处理后文件需要导入
+2025-03-12 15:43:41,250 - NewsDataIntegrator - INFO - 正在导入文件: data/processed\财经滚动新闻_新浪网20250312152026_processed_20250312_152049.csv
+2025-03-12 15:43:41,252 - NewsDataIntegrator - ERROR - 导入数据到数据库时出错: table news_articles has no column named 标题
+2025-03-12 15:43:41,252 - NewsDataIntegrator - INFO - 正在导入文件: data/processed\财经滚动新闻_新浪网20250312153013_processed_20250312_154341.csv
+2025-03-12 15:43:41,254 - NewsDataIntegrator - ERROR - 导入数据到数据库时出错: table news_articles has no column named 标题
+2025-03-12 15:43:41,254 - NewsDataIntegrator - INFO - 正在导入文件: data/processed\财经滚动新闻_新浪网20250312153958_processed_20250312_154341.csv
+2025-03-12 15:43:41,261 - NewsDataIntegrator - INFO - 已将 5 条记录从 data/processed\财经滚动新闻_新浪网20250312153958_processed_20250312_154341.csv 导入到数据库
+2025-03-12 15:43:41,261 - NewsDataIntegrator - INFO - 已移动导入完成的文件 data/processed\财经滚动新闻_新浪网20250312153958_processed_20250312_154341.csv 到 data/imported\20250312_154341_财经滚动新闻_新浪网20250312153958_processed_20250312_154341.csv
+2025-03-12 15:43:41,261 - NewsDataIntegrator - INFO - 数据集成完成，共导入 5 条记录
+2025-03-12 15:43:41,261 - NewsDataPipeline - INFO - 数据处理流水线运行完成
+2025-03-12 15:45:03,975 - NewsDataPipeline - INFO - 正在加载配置文件: config.json
+2025-03-12 15:45:03,979 - NewsDataPipeline - INFO - 初始化数据处理器和集成器
+2025-03-12 15:45:03,980 - NewsDataIntegrator - INFO - 数据库初始化完成: news_database.db
+2025-03-12 15:45:03,980 - NewsDataPipeline - INFO - 数据处理流水线启动，间隔时间: 10 分钟
+2025-03-12 15:45:03,980 - NewsDataPipeline - INFO - 开始运行数据处理流水线...
+2025-03-12 15:45:03,980 - NewsDataPipeline - INFO - 步骤1: 处理新数据
+2025-03-12 15:45:03,980 - NewsDataProcessor - INFO - 没有新文件需要处理
+2025-03-12 15:45:03,980 - NewsDataPipeline - INFO - 步骤2: 将处理后的数据集成到数据库
+2025-03-12 15:45:03,980 - NewsDataIntegrator - INFO - 没有新的处理后文件需要导入
+2025-03-12 15:45:03,980 - NewsDataPipeline - INFO - 数据处理流水线运行完成
+2025-03-12 15:47:33,722 - NewsDataPipeline - INFO - 正在加载配置文件: config.json
+2025-03-12 15:47:33,727 - NewsDataPipeline - INFO - 初始化数据处理器和集成器
+2025-03-12 15:47:33,728 - NewsDataIntegrator - INFO - 数据库初始化完成: news_database.db
+2025-03-12 15:47:33,728 - NewsDataPipeline - INFO - 数据处理流水线启动，间隔时间: 10 分钟
+2025-03-12 15:47:33,728 - NewsDataPipeline - INFO - 开始运行数据处理流水线...
+2025-03-12 15:47:33,728 - NewsDataPipeline - INFO - 步骤1: 处理新数据
+2025-03-12 15:47:33,728 - NewsDataProcessor - INFO - 发现 1 个新文件需要处理
+2025-03-12 15:47:33,728 - NewsDataProcessor - INFO - 正在处理文件: data/raw\财经滚动新闻_新浪网20250312154723.json
+2025-03-12 15:47:33,728 - NewsDataProcessor - WARNING - 无法转换publish_time字段为日期时间格式
+2025-03-12 15:47:33,743 - NewsDataProcessor - INFO - 已保存处理后的数据到 data/processed\财经滚动新闻_新浪网20250312154723_processed_20250312_154733.csv
+2025-03-12 15:47:33,747 - NewsDataProcessor - INFO - 已归档文件 data/raw\财经滚动新闻_新浪网20250312154723.json 到 data/archive\20250312_154733_财经滚动新闻_新浪网20250312154723.json
+2025-03-12 15:47:33,747 - NewsDataProcessor - INFO - 所有文件处理完成
+2025-03-12 15:47:33,747 - NewsDataPipeline - INFO - 步骤2: 将处理后的数据集成到数据库
+2025-03-12 15:47:33,747 - NewsDataIntegrator - INFO - 发现 1 个处理后文件需要导入
+2025-03-12 15:47:33,747 - NewsDataIntegrator - INFO - 正在导入文件: data/processed\财经滚动新闻_新浪网20250312154723_processed_20250312_154733.csv
+2025-03-12 15:47:33,759 - NewsDataIntegrator - INFO - 已将 5 条记录从 data/processed\财经滚动新闻_新浪网20250312154723_processed_20250312_154733.csv 导入到数据库
+2025-03-12 15:47:33,762 - NewsDataIntegrator - INFO - 已移动导入完成的文件 data/processed\财经滚动新闻_新浪网20250312154723_processed_20250312_154733.csv 到 data/imported\20250312_154733_财经滚动新闻_新浪网20250312154723_processed_20250312_154733.csv
+2025-03-12 15:47:33,762 - NewsDataIntegrator - INFO - 数据集成完成，共导入 5 条记录
+2025-03-12 15:47:33,762 - NewsDataPipeline - INFO - 数据处理流水线运行完成
+2025-03-12 16:02:25,513 - NewsDataPipeline - INFO - 正在加载配置文件: config.json
+2025-03-12 16:02:25,514 - NewsDataPipeline - INFO - 初始化数据处理器和集成器
+2025-03-12 16:02:25,516 - NewsDataIntegrator - INFO - 数据库初始化完成: news_database.db
+2025-03-12 16:02:25,516 - NewsDataPipeline - INFO - 数据处理流水线启动，间隔时间: 10 分钟
+2025-03-12 16:02:25,516 - NewsDataPipeline - INFO - 开始运行数据处理流水线...
+2025-03-12 16:02:25,516 - NewsDataPipeline - INFO - 步骤1: 处理新数据
+2025-03-12 16:02:25,516 - NewsDataProcessor - INFO - 发现 1 个新文件需要处理
+2025-03-12 16:02:25,517 - NewsDataProcessor - INFO - 正在处理文件: data/raw\财经滚动新闻_新浪网20250312155722.json
+2025-03-12 16:02:25,519 - NewsDataProcessor - WARNING - 无法转换publish_time字段为日期时间格式
+2025-03-12 16:02:25,523 - NewsDataProcessor - INFO - 已保存处理后的数据到 data/processed\财经滚动新闻_新浪网20250312155722_processed_20250312_160225.csv
+2025-03-12 16:02:25,535 - NewsDataProcessor - INFO - 已归档文件 data/raw\财经滚动新闻_新浪网20250312155722.json 到 data/archive\20250312_160225_财经滚动新闻_新浪网20250312155722.json
+2025-03-12 16:02:25,535 - NewsDataProcessor - INFO - 所有文件处理完成
+2025-03-12 16:02:25,535 - NewsDataPipeline - INFO - 步骤2: 将处理后的数据集成到数据库
+2025-03-12 16:02:25,535 - NewsDataIntegrator - INFO - 发现 1 个处理后文件需要导入
+2025-03-12 16:02:25,535 - NewsDataIntegrator - INFO - 正在导入文件: data/processed\财经滚动新闻_新浪网20250312155722_processed_20250312_160225.csv
+2025-03-12 16:02:25,548 - NewsDataIntegrator - INFO - 已将 5 条记录从 data/processed\财经滚动新闻_新浪网20250312155722_processed_20250312_160225.csv 导入到数据库
+2025-03-12 16:02:25,551 - NewsDataIntegrator - INFO - 已移动导入完成的文件 data/processed\财经滚动新闻_新浪网20250312155722_processed_20250312_160225.csv 到 data/imported\20250312_160225_财经滚动新闻_新浪网20250312155722_processed_20250312_160225.csv
+2025-03-12 16:02:25,551 - NewsDataIntegrator - INFO - 数据集成完成，共导入 5 条记录
+2025-03-12 16:02:25,551 - NewsDataPipeline - INFO - 数据处理流水线运行完成
+2025-03-12 16:10:16,563 - NewsDataPipeline - INFO - 正在加载配置文件: config.json
+2025-03-12 16:10:16,563 - NewsDataPipeline - INFO - 初始化数据处理器和集成器
+2025-03-12 16:10:16,563 - NewsDataIntegrator - INFO - 数据库初始化完成: news_database.db
+2025-03-12 16:10:16,563 - NewsDataPipeline - INFO - 数据处理流水线启动，间隔时间: 10 分钟
+2025-03-12 16:10:16,563 - NewsDataPipeline - INFO - 开始运行数据处理流水线...
+2025-03-12 16:10:16,563 - NewsDataPipeline - INFO - 步骤1: 处理新数据
+2025-03-12 16:10:16,563 - NewsDataProcessor - INFO - 发现 1 个新文件需要处理
+2025-03-12 16:10:16,563 - NewsDataProcessor - INFO - 正在处理文件: data/raw\财经滚动新闻_新浪网20250312160724.json
+2025-03-12 16:10:16,563 - NewsDataProcessor - WARNING - 无法转换publish_time字段为日期时间格式
+2025-03-12 16:10:16,572 - NewsDataProcessor - INFO - 已保存处理后的数据到 data/processed\财经滚动新闻_新浪网20250312160724_processed_20250312_161016.csv
+2025-03-12 16:10:16,574 - NewsDataProcessor - INFO - 已归档文件 data/raw\财经滚动新闻_新浪网20250312160724.json 到 data/archive\20250312_161016_财经滚动新闻_新浪网20250312160724.json
+2025-03-12 16:10:16,574 - NewsDataProcessor - INFO - 所有文件处理完成
+2025-03-12 16:10:16,574 - NewsDataPipeline - INFO - 步骤2: 将处理后的数据集成到数据库
+2025-03-12 16:10:16,574 - NewsDataIntegrator - INFO - 发现 1 个处理后文件需要导入
+2025-03-12 16:10:16,575 - NewsDataIntegrator - INFO - 正在导入文件: data/processed\财经滚动新闻_新浪网20250312160724_processed_20250312_161016.csv
+2025-03-12 16:10:16,587 - NewsDataIntegrator - INFO - 已将 5 条记录从 data/processed\财经滚动新闻_新浪网20250312160724_processed_20250312_161016.csv 导入到数据库
+2025-03-12 16:10:16,591 - NewsDataIntegrator - INFO - 已移动导入完成的文件 data/processed\财经滚动新闻_新浪网20250312160724_processed_20250312_161016.csv 到 data/imported\20250312_161016_财经滚动新闻_新浪网20250312160724_processed_20250312_161016.csv
+2025-03-12 16:10:16,592 - NewsDataIntegrator - INFO - 数据集成完成，共导入 5 条记录
+2025-03-12 16:10:16,597 - NewsDataIntegrator - INFO - 已将 22 条记录导出到 news_data.json
+2025-03-12 16:10:16,597 - NewsDataPipeline - INFO - 步骤3: 导出为JSON文件，用于现有系统
+2025-03-12 16:10:16,600 - NewsDataIntegrator - INFO - 已将 22 条记录导出到 news_data.json
+2025-03-12 16:10:16,600 - NewsDataPipeline - INFO - 已将 22 条记录导出到 news_data.json
+2025-03-12 16:10:16,600 - NewsDataPipeline - INFO - 数据处理流水线运行完成
+2025-03-12 16:20:16,821 - NewsDataPipeline - INFO - 开始运行数据处理流水线...
+2025-03-12 16:20:16,822 - NewsDataPipeline - INFO - 步骤1: 处理新数据
+2025-03-12 16:20:16,822 - NewsDataProcessor - INFO - 发现 1 个新文件需要处理
+2025-03-12 16:20:16,822 - NewsDataProcessor - INFO - 正在处理文件: data/raw\财经滚动新闻_新浪网20250312161812.json
+2025-03-12 16:20:16,824 - NewsDataProcessor - WARNING - 无法转换publish_time字段为日期时间格式
+2025-03-12 16:20:16,826 - NewsDataProcessor - INFO - 已保存处理后的数据到 data/processed\财经滚动新闻_新浪网20250312161812_processed_20250312_162016.csv
+2025-03-12 16:20:16,838 - NewsDataProcessor - INFO - 已归档文件 data/raw\财经滚动新闻_新浪网20250312161812.json 到 data/archive\20250312_162016_财经滚动新闻_新浪网20250312161812.json
+2025-03-12 16:20:16,838 - NewsDataProcessor - INFO - 所有文件处理完成
+2025-03-12 16:20:16,838 - NewsDataPipeline - INFO - 步骤2: 将处理后的数据集成到数据库
+2025-03-12 16:20:16,838 - NewsDataIntegrator - INFO - 发现 1 个处理后文件需要导入
+2025-03-12 16:20:16,839 - NewsDataIntegrator - INFO - 正在导入文件: data/processed\财经滚动新闻_新浪网20250312161812_processed_20250312_162016.csv
+2025-03-12 16:20:16,850 - NewsDataIntegrator - INFO - 已将 3 条记录从 data/processed\财经滚动新闻_新浪网20250312161812_processed_20250312_162016.csv 导入到数据库
+2025-03-12 16:20:16,853 - NewsDataIntegrator - INFO - 已移动导入完成的文件 data/processed\财经滚动新闻_新浪网20250312161812_processed_20250312_162016.csv 到 data/imported\20250312_162016_财经滚动新闻_新浪网20250312161812_processed_20250312_162016.csv
+2025-03-12 16:20:16,853 - NewsDataIntegrator - INFO - 数据集成完成，共导入 3 条记录
+2025-03-12 16:20:16,856 - NewsDataIntegrator - INFO - 已将 25 条记录导出到 news_data.json
+2025-03-12 16:20:16,856 - NewsDataPipeline - INFO - 步骤3: 导出为JSON文件，用于现有系统
+2025-03-12 16:20:16,859 - NewsDataIntegrator - INFO - 已将 25 条记录导出到 news_data.json
+2025-03-12 16:20:16,859 - NewsDataPipeline - INFO - 已将 25 条记录导出到 news_data.json
+2025-03-12 16:20:16,859 - NewsDataPipeline - INFO - 数据处理流水线运行完成
+2025-03-12 16:28:41,694 - NewsDataPipeline - INFO - 正在加载配置文件: config.json
+2025-03-12 16:28:41,695 - NewsDataPipeline - INFO - 初始化数据处理器和集成器
+2025-03-12 16:28:41,696 - NewsDataIntegrator - INFO - 数据库初始化完成: news_database.db
+2025-03-12 16:28:41,696 - NewsDataPipeline - INFO - 数据处理流水线启动，间隔时间: 10 分钟
+2025-03-12 16:28:41,696 - NewsDataPipeline - INFO - 开始运行数据处理流水线...
+2025-03-12 16:28:41,696 - NewsDataPipeline - INFO - 步骤1: 处理新数据
+2025-03-12 16:28:41,696 - NewsDataProcessor - INFO - 发现 1 个新文件需要处理
+2025-03-12 16:28:41,696 - NewsDataProcessor - INFO - 正在处理文件: data/raw\财经滚动新闻_新浪网20250312162840.json
+2025-03-12 16:28:41,699 - NewsDataProcessor - WARNING - 无法转换publish_time字段为日期时间格式
+2025-03-12 16:28:41,705 - NewsDataProcessor - INFO - 已保存处理后的数据到 data/processed\财经滚动新闻_新浪网20250312162840_processed_20250312_162841.csv
+2025-03-12 16:28:41,706 - NewsDataProcessor - INFO - 已归档文件 data/raw\财经滚动新闻_新浪网20250312162840.json 到 data/archive\20250312_162841_财经滚动新闻_新浪网20250312162840.json
+2025-03-12 16:28:41,707 - NewsDataProcessor - INFO - 所有文件处理完成
+2025-03-12 16:28:41,707 - NewsDataPipeline - INFO - 步骤2: 将处理后的数据集成到数据库
+2025-03-12 16:28:41,708 - NewsDataIntegrator - INFO - 发现 1 个处理后文件需要导入
+2025-03-12 16:28:41,708 - NewsDataIntegrator - INFO - 正在导入文件: data/processed\财经滚动新闻_新浪网20250312162840_processed_20250312_162841.csv
+2025-03-12 16:28:41,727 - NewsDataIntegrator - INFO - 已将 3 条记录从 data/processed\财经滚动新闻_新浪网20250312162840_processed_20250312_162841.csv 导入到数据库
+2025-03-12 16:28:41,728 - NewsDataIntegrator - INFO - 已移动导入完成的文件 data/processed\财经滚动新闻_新浪网20250312162840_processed_20250312_162841.csv 到 data/imported\20250312_162841_财经滚动新闻_新浪网20250312162840_processed_20250312_162841.csv
+2025-03-12 16:28:41,729 - NewsDataIntegrator - INFO - 数据集成完成，共导入 3 条记录
+2025-03-12 16:28:41,733 - NewsDataIntegrator - INFO - 已将 28 条记录导出到 news_data.json
+2025-03-12 16:28:41,733 - NewsDataPipeline - INFO - 步骤3: 导出为JSON文件，用于现有系统
+2025-03-12 16:28:41,736 - NewsDataIntegrator - INFO - 已将 28 条记录导出到 news_data.json
+2025-03-12 16:28:41,736 - NewsDataPipeline - INFO - 已将 28 条记录导出到 news_data.json
+2025-03-12 16:28:41,736 - NewsDataPipeline - INFO - 数据处理流水线运行完成
+2025-03-12 16:38:32,237 - NewsDataPipeline - INFO - 正在加载配置文件: config.json
+2025-03-12 16:38:32,238 - NewsDataPipeline - INFO - 初始化数据处理器和集成器
+2025-03-12 16:38:32,239 - NewsDataIntegrator - INFO - 数据库初始化完成: news_database.db
+2025-03-12 16:38:32,239 - NewsDataPipeline - INFO - 数据处理流水线启动，间隔时间: 10 分钟
+2025-03-12 16:38:32,240 - NewsDataPipeline - INFO - 开始运行数据处理流水线...
+2025-03-12 16:38:32,240 - NewsDataPipeline - INFO - 步骤1: 处理新数据
+2025-03-12 16:38:32,240 - NewsDataProcessor - INFO - 发现 1 个新文件需要处理
+2025-03-12 16:38:32,240 - NewsDataProcessor - INFO - 正在处理文件: data/raw\财经滚动新闻_新浪网20250312163753.json
+2025-03-12 16:38:32,243 - NewsDataProcessor - WARNING - 无法转换publish_time字段为日期时间格式
+2025-03-12 16:38:32,250 - NewsDataProcessor - INFO - 已保存处理后的数据到 data/processed\财经滚动新闻_新浪网20250312163753_processed_20250312_163832.csv
+2025-03-12 16:38:32,252 - NewsDataProcessor - INFO - 已归档文件 data/raw\财经滚动新闻_新浪网20250312163753.json 到 data/archive\20250312_163832_财经滚动新闻_新浪网20250312163753.json
+2025-03-12 16:38:32,252 - NewsDataProcessor - INFO - 所有文件处理完成
+2025-03-12 16:38:32,253 - NewsDataPipeline - INFO - 步骤2: 将处理后的数据集成到数据库
+2025-03-12 16:38:32,253 - NewsDataIntegrator - INFO - 发现 1 个处理后文件需要导入
+2025-03-12 16:38:32,253 - NewsDataIntegrator - INFO - 正在导入文件: data/processed\财经滚动新闻_新浪网20250312163753_processed_20250312_163832.csv
+2025-03-12 16:38:32,265 - NewsDataIntegrator - INFO - 已将 5 条记录从 data/processed\财经滚动新闻_新浪网20250312163753_processed_20250312_163832.csv 导入到数据库
+2025-03-12 16:38:32,268 - NewsDataIntegrator - INFO - 已移动导入完成的文件 data/processed\财经滚动新闻_新浪网20250312163753_processed_20250312_163832.csv 到 data/imported\20250312_163832_财经滚动新闻_新浪网20250312163753_processed_20250312_163832.csv
+2025-03-12 16:38:32,268 - NewsDataIntegrator - INFO - 数据集成完成，共导入 5 条记录
+2025-03-12 16:38:32,273 - NewsDataIntegrator - INFO - 已将 33 条记录导出到 news_data.json
+2025-03-12 16:38:32,273 - NewsDataPipeline - INFO - 步骤3: 导出为JSON文件，用于现有系统
+2025-03-12 16:38:32,277 - NewsDataIntegrator - INFO - 已将 33 条记录导出到 data/news_data.json
+2025-03-12 16:38:32,277 - NewsDataPipeline - INFO - 已将 33 条记录导出到 data/news_data.json
+2025-03-12 16:38:32,277 - NewsDataPipeline - INFO - 数据处理流水线运行完成
+2025-03-12 16:48:32,494 - NewsDataPipeline - INFO - 开始运行数据处理流水线...
+2025-03-12 16:48:32,496 - NewsDataPipeline - INFO - 步骤1: 处理新数据
+2025-03-12 16:48:32,496 - NewsDataProcessor - INFO - 发现 1 个新文件需要处理
+2025-03-12 16:48:32,497 - NewsDataProcessor - INFO - 正在处理文件: data/raw\财经滚动新闻_新浪网20250312164753.json
+2025-03-12 16:48:32,502 - NewsDataProcessor - WARNING - 无法转换publish_time字段为日期时间格式
+2025-03-12 16:48:32,508 - NewsDataProcessor - INFO - 已保存处理后的数据到 data/processed\财经滚动新闻_新浪网20250312164753_processed_20250312_164832.csv
+2025-03-12 16:48:32,520 - NewsDataProcessor - INFO - 已归档文件 data/raw\财经滚动新闻_新浪网20250312164753.json 到 data/archive\20250312_164832_财经滚动新闻_新浪网20250312164753.json
+2025-03-12 16:48:32,520 - NewsDataProcessor - INFO - 所有文件处理完成
+2025-03-12 16:48:32,521 - NewsDataPipeline - INFO - 步骤2: 将处理后的数据集成到数据库
+2025-03-12 16:48:32,521 - NewsDataIntegrator - INFO - 发现 1 个处理后文件需要导入
+2025-03-12 16:48:32,521 - NewsDataIntegrator - INFO - 正在导入文件: data/processed\财经滚动新闻_新浪网20250312164753_processed_20250312_164832.csv
+2025-03-12 16:48:32,537 - NewsDataIntegrator - INFO - 已将 5 条记录从 data/processed\财经滚动新闻_新浪网20250312164753_processed_20250312_164832.csv 导入到数据库
+2025-03-12 16:48:32,540 - NewsDataIntegrator - INFO - 已移动导入完成的文件 data/processed\财经滚动新闻_新浪网20250312164753_processed_20250312_164832.csv 到 data/imported\20250312_164832_财经滚动新闻_新浪网20250312164753_processed_20250312_164832.csv
+2025-03-12 16:48:32,540 - NewsDataIntegrator - INFO - 数据集成完成，共导入 5 条记录
+2025-03-12 16:48:32,544 - NewsDataIntegrator - INFO - 已将 38 条记录导出到 news_data.json
+2025-03-12 16:48:32,545 - NewsDataPipeline - INFO - 步骤3: 导出为JSON文件，用于现有系统
+2025-03-12 16:48:32,548 - NewsDataIntegrator - INFO - 已将 38 条记录导出到 data/news_data.json
+2025-03-12 16:48:32,548 - NewsDataPipeline - INFO - 已将 38 条记录导出到 data/news_data.json
+2025-03-12 16:48:32,549 - NewsDataPipeline - INFO - 数据处理流水线运行完成
+2025-03-12 16:58:32,757 - NewsDataPipeline - INFO - 开始运行数据处理流水线...
+2025-03-12 16:58:32,757 - NewsDataPipeline - INFO - 步骤1: 处理新数据
+2025-03-12 16:58:32,757 - NewsDataProcessor - INFO - 发现 1 个新文件需要处理
+2025-03-12 16:58:32,757 - NewsDataProcessor - INFO - 正在处理文件: data/raw\财经滚动新闻_新浪网20250312165751.json
+2025-03-12 16:58:32,766 - NewsDataProcessor - WARNING - 无法转换publish_time字段为日期时间格式
+2025-03-12 16:58:32,775 - NewsDataProcessor - INFO - 已保存处理后的数据到 data/processed\财经滚动新闻_新浪网20250312165751_processed_20250312_165832.csv
+2025-03-12 16:58:32,780 - NewsDataProcessor - INFO - 已归档文件 data/raw\财经滚动新闻_新浪网20250312165751.json 到 data/archive\20250312_165832_财经滚动新闻_新浪网20250312165751.json
+2025-03-12 16:58:32,780 - NewsDataProcessor - INFO - 所有文件处理完成
+2025-03-12 16:58:32,780 - NewsDataPipeline - INFO - 步骤2: 将处理后的数据集成到数据库
+2025-03-12 16:58:32,781 - NewsDataIntegrator - INFO - 发现 1 个处理后文件需要导入
+2025-03-12 16:58:32,781 - NewsDataIntegrator - INFO - 正在导入文件: data/processed\财经滚动新闻_新浪网20250312165751_processed_20250312_165832.csv
+2025-03-12 16:58:32,798 - NewsDataIntegrator - INFO - 已将 5 条记录从 data/processed\财经滚动新闻_新浪网20250312165751_processed_20250312_165832.csv 导入到数据库
+2025-03-12 16:58:32,803 - NewsDataIntegrator - INFO - 已移动导入完成的文件 data/processed\财经滚动新闻_新浪网20250312165751_processed_20250312_165832.csv 到 data/imported\20250312_165832_财经滚动新闻_新浪网20250312165751_processed_20250312_165832.csv
+2025-03-12 16:58:32,803 - NewsDataIntegrator - INFO - 数据集成完成，共导入 5 条记录
+2025-03-12 16:58:32,807 - NewsDataIntegrator - INFO - 已将 43 条记录导出到 news_data.json
+2025-03-12 16:58:32,807 - NewsDataPipeline - INFO - 步骤3: 导出为JSON文件，用于现有系统
+2025-03-12 16:58:32,810 - NewsDataIntegrator - INFO - 已将 43 条记录导出到 data/news_data.json
+2025-03-12 16:58:32,810 - NewsDataPipeline - INFO - 已将 43 条记录导出到 data/news_data.json
+2025-03-12 16:58:32,810 - NewsDataPipeline - INFO - 数据处理流水线运行完成

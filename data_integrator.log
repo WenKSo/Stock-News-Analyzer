@@ -1,0 +1,48 @@
+2025-03-12 16:16:50,980 - NewsDataIntegrator - INFO - 数据库初始化完成: news_database.db
+2025-03-12 16:16:50,985 - NewsDataIntegrator - INFO - 已将 22 条记录导出到 news_data.json
+2025-03-12 16:16:50,985 - ExportJSON - INFO - 成功导出 22 条记录到 news_data.json
+2025-03-12 16:17:20,283 - NewsDataIntegrator - INFO - 数据库初始化完成: news_database.db
+2025-03-12 16:17:20,288 - NewsDataIntegrator - INFO - 已将 22 条记录导出到 news_data.json
+2025-03-12 16:17:20,288 - ExportJSON - INFO - 成功导出 22 条记录到 news_data.json
+2025-03-12 16:18:38,512 - NewsDataIntegrator - INFO - 数据库初始化完成: news_database.db
+2025-03-12 16:18:38,518 - NewsDataIntegrator - INFO - 已将 22 条记录导出到 news_data.json
+2025-03-12 16:18:38,518 - ExportJSON - INFO - 成功导出 22 条记录到 news_data.json
+2025-03-12 16:20:40,632 - ExportJSON - INFO - 输出文件的绝对路径: C:\Users\Key\Desktop\选股模型\news_data.json
+2025-03-12 16:20:40,632 - ExportJSON - INFO - 文件 C:\Users\Key\Desktop\选股模型\news_data.json 已存在
+2025-03-12 16:20:40,632 - ExportJSON - INFO - 现有文件包含 25 条记录
+2025-03-12 16:20:40,633 - NewsDataIntegrator - INFO - 数据库初始化完成: news_database.db
+2025-03-12 16:20:40,633 - NewsDataIntegrator - INFO - 准备导出数据到: C:\Users\Key\Desktop\选股模型\news_data.json
+2025-03-12 16:20:40,633 - NewsDataIntegrator - INFO - 执行SQL查询: SELECT * FROM news_articles ORDER BY publish_time DESC
+2025-03-12 16:20:40,635 - NewsDataIntegrator - INFO - 从数据库读取了 25 条记录
+2025-03-12 16:20:40,636 - NewsDataIntegrator - WARNING - 转换列 publish_time 时出错: Unknown datetime string format, unable to parse: 2025年03月12日 16:15, at position 0
+2025-03-12 16:20:40,638 - NewsDataIntegrator - INFO - 文件 C:\Users\Key\Desktop\选股模型\news_data.json 已写入，大小: 88555 字节
+2025-03-12 16:20:40,638 - NewsDataIntegrator - INFO - 已将 25 条记录导出到 C:\Users\Key\Desktop\选股模型\news_data.json
+2025-03-12 16:20:40,638 - ExportJSON - INFO - 成功导出 25 条记录到 C:\Users\Key\Desktop\选股模型\news_data.json
+2025-03-12 16:20:40,639 - ExportJSON - INFO - 验证: 新文件包含 25 条记录
+2025-03-12 16:20:40,639 - ExportJSON - INFO - 第一条记录标题: 中泰国际：维持中国水务“买入”评级 上调目标价至7.22港元
+2025-03-12 16:21:14,010 - ExportJSON - INFO - 输出文件的绝对路径: C:\Users\Key\Desktop\选股模型\news_data.json
+2025-03-12 16:21:14,010 - ExportJSON - INFO - 文件 C:\Users\Key\Desktop\选股模型\news_data.json 已存在
+2025-03-12 16:21:14,011 - ExportJSON - INFO - 现有文件包含 25 条记录
+2025-03-12 16:21:14,011 - NewsDataIntegrator - INFO - 数据库初始化完成: news_database.db
+2025-03-12 16:21:14,011 - NewsDataIntegrator - INFO - 准备导出数据到: C:\Users\Key\Desktop\选股模型\news_data.json
+2025-03-12 16:21:14,012 - NewsDataIntegrator - INFO - 执行SQL查询: SELECT * FROM news_articles ORDER BY publish_time DESC
+2025-03-12 16:21:14,013 - NewsDataIntegrator - INFO - 从数据库读取了 25 条记录
+2025-03-12 16:21:14,014 - NewsDataIntegrator - WARNING - 转换列 publish_time 时出错: Unknown datetime string format, unable to parse: 2025年03月12日 16:15, at position 0
+2025-03-12 16:21:14,016 - NewsDataIntegrator - INFO - 文件 C:\Users\Key\Desktop\选股模型\news_data.json 已写入，大小: 88555 字节
+2025-03-12 16:21:14,016 - NewsDataIntegrator - INFO - 已将 25 条记录导出到 C:\Users\Key\Desktop\选股模型\news_data.json
+2025-03-12 16:21:14,016 - ExportJSON - INFO - 成功导出 25 条记录到 C:\Users\Key\Desktop\选股模型\news_data.json
+2025-03-12 16:21:14,018 - ExportJSON - INFO - 验证: 新文件包含 25 条记录
+2025-03-12 16:21:14,018 - ExportJSON - INFO - 第一条记录标题: 中泰国际：维持中国水务“买入”评级 上调目标价至7.22港元
+2025-03-12 16:21:31,342 - ExportJSON - INFO - 输出文件的绝对路径: C:\Users\Key\Desktop\选股模型\news_data.json
+2025-03-12 16:21:31,342 - ExportJSON - INFO - 文件 C:\Users\Key\Desktop\选股模型\news_data.json 已存在
+2025-03-12 16:21:31,343 - ExportJSON - INFO - 现有文件包含 25 条记录
+2025-03-12 16:21:31,343 - NewsDataIntegrator - INFO - 数据库初始化完成: news_database.db
+2025-03-12 16:21:31,343 - NewsDataIntegrator - INFO - 准备导出数据到: C:\Users\Key\Desktop\选股模型\news_data.json
+2025-03-12 16:21:31,344 - NewsDataIntegrator - INFO - 执行SQL查询: SELECT * FROM news_articles ORDER BY publish_time DESC
+2025-03-12 16:21:31,346 - NewsDataIntegrator - INFO - 从数据库读取了 25 条记录
+2025-03-12 16:21:31,348 - NewsDataIntegrator - WARNING - 转换列 publish_time 时出错: Unknown datetime string format, unable to parse: 2025年03月12日 16:15, at position 0
+2025-03-12 16:21:31,350 - NewsDataIntegrator - INFO - 文件 C:\Users\Key\Desktop\选股模型\news_data.json 已写入，大小: 88555 字节
+2025-03-12 16:21:31,351 - NewsDataIntegrator - INFO - 已将 25 条记录导出到 C:\Users\Key\Desktop\选股模型\news_data.json
+2025-03-12 16:21:31,351 - ExportJSON - INFO - 成功导出 25 条记录到 C:\Users\Key\Desktop\选股模型\news_data.json
+2025-03-12 16:21:31,351 - ExportJSON - INFO - 验证: 新文件包含 25 条记录
+2025-03-12 16:21:31,351 - ExportJSON - INFO - 第一条记录标题: 中泰国际：维持中国水务“买入”评级 上调目标价至7.22港元
