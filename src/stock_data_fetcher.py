@@ -2,6 +2,86 @@ import akshare as ak
 import pandas as pd
 from datetime import datetime
 
+def ensure_compatible_types(df):
+    """
+    确保DataFrame中的数据类型兼容，特别是处理可能导致PyArrow错误的混合类型
+    """
+    if df is None or df.empty:
+        return df
+    
+    # 检查每一列
+    for col in df.columns:
+        # 如果列中有'未知'值，将整列转换为字符串类型
+        if df[col].astype(str).str.contains('未知').any():
+            df[col] = df[col].astype(str)
+    
+    return df
+
+def get_stock_basic_info(stock_code):
+    """
+    获取股票的基本信息，包括名称、行业、上市日期等
+    使用多种方法尝试获取，提高成功率
+    """
+    try:
+        # 处理股票代码格式
+        code_without_market = stock_code
+        if '.' in stock_code:
+            code_parts = stock_code.split('.')
+            code_without_market = code_parts[0]
+        
+        # 尝试方法1: 使用 stock_individual_info_em
+        try:
+            info = ak.stock_individual_info_em(symbol=code_without_market)
+            if not info.empty:
+                print(f"使用stock_individual_info_em成功获取到股票信息: {info.head()}")
+                return ensure_compatible_types(info)
+        except Exception as e:
+            print(f"使用stock_individual_info_em获取股票信息失败: {e}")
+        
+        # 尝试方法2: 使用 stock_zh_a_spot_em
+        try:
+            spot_info = ak.stock_zh_a_spot_em()
+            stock_spot = spot_info[spot_info['代码'] == code_without_market]
+            if not stock_spot.empty:
+                # 转换为预期的格式
+                info = pd.DataFrame({
+                    'item': ['名称', '所属行业', '上市日期'],
+                    'value': [
+                        stock_spot['名称'].values[0],
+                        '未知',  # 行业信息需要从其他API获取
+                        '未知'   # 上市日期需要从其他API获取
+                    ]
+                })
+                print(f"使用stock_zh_a_spot_em成功获取到股票信息: {info}")
+                return ensure_compatible_types(info)
+        except Exception as e:
+            print(f"使用stock_zh_a_spot_em获取股票信息失败: {e}")
+        
+        # 尝试方法3: 使用 stock_info_a_code_name
+        try:
+            stock_list = ak.stock_info_a_code_name()
+            stock_basic = stock_list[stock_list['code'] == code_without_market]
+            if not stock_basic.empty:
+                info = pd.DataFrame({
+                    'item': ['名称', '所属行业', '上市日期'],
+                    'value': [
+                        stock_basic['name'].values[0],
+                        '未知',  # 行业信息需要从其他API获取
+                        '未知'   # 上市日期需要从其他API获取
+                    ]
+                })
+                print(f"使用stock_info_a_code_name成功获取到股票信息: {info}")
+                return ensure_compatible_types(info)
+        except Exception as e:
+            print(f"使用stock_info_a_code_name获取股票信息失败: {e}")
+        
+        # 如果所有方法都失败，返回空的DataFrame
+        print(f"所有方法都无法获取股票 {stock_code} 的基本信息")
+        return ensure_compatible_types(pd.DataFrame({'item': ['名称', '所属行业', '上市日期'], 'value': ['未知', '未知', '未知']}))
+    except Exception as e:
+        print(f"获取股票基本信息时发生未知错误: {e}")
+        return ensure_compatible_types(pd.DataFrame({'item': ['名称', '所属行业', '上市日期'], 'value': ['未知', '未知', '未知']}))
+
 def get_stock_data(stock_code):
     """
     使用Akshare获取股票的全面数据，包括：
@@ -42,19 +122,7 @@ def get_stock_data(stock_code):
         print(f"原始股票代码: {stock_code}, 处理后的股票代码: {formatted_code}, 纯代码: {code_without_market}")
         
         # 获取股票基本信息
-        try:
-            stock_info = ak.stock_individual_info_em(symbol=formatted_code)
-            print(f"获取到的股票基本信息: {stock_info.head()}")
-        except Exception as e:
-            print(f"获取股票基本信息出错: {e}")
-            # 尝试使用另一种方式获取基本信息
-            try:
-                stock_info = ak.stock_individual_info_em(symbol=code_without_market)
-                print(f"使用纯代码获取到的股票基本信息: {stock_info.head()}")
-            except Exception as e2:
-                print(f"使用纯代码获取股票基本信息也出错: {e2}")
-                # 创建一个空的DataFrame作为备用
-                stock_info = pd.DataFrame({'item': ['名称', '所属行业', '上市日期'], 'value': ['未知', '未知', '未知']})
+        stock_info = get_stock_basic_info(stock_code)
         
         # 获取最新交易日数据（价格等）
         try:
@@ -241,45 +309,13 @@ def get_stock_data(stock_code):
         if list_date == '未知' or not real_time_quote:
             # 尝试进一步确认是否已上市
             try:
-                stock_list = ak.stock_zh_a_spot_em()
-                is_listed = code_without_market in stock_list['代码'].values
+                # 使用 stock_info_a_code_name 获取A股列表
+                stock_list = ak.stock_info_a_code_name()
+                is_listed = code_without_market in stock_list['code'].values
                 print(f"股票 {code_without_market} 是否在A股上市: {is_listed}")
             except Exception as e:
                 print(f"检查股票是否上市出错: {e}")
                 is_listed = False
-        
-        # 改进股票上市验证逻辑
-        # 如果不是已上市股票，返回空数据
-        if not is_listed:
-            # 再次尝试确认是否为A股股票，使用更宽松的匹配方式
-            try:
-                # 获取所有A股代码
-                stock_list = ak.stock_zh_a_spot_em()
-                # 检查纯数字代码是否在列表中
-                is_listed = code_without_market in stock_list['代码'].values
-                
-                # 如果仍然找不到，尝试不同的格式化方式
-                if not is_listed:
-                    # 尝试前缀匹配（有些股票代码可能有前导零）
-                    is_listed = any(code.endswith(code_without_market) for code in stock_list['代码'].values)
-                    
-                    # 如果仍然找不到，检查是否有实时行情数据
-                    if not is_listed and real_time_quote:
-                        is_listed = True
-                        print(f"通过实时行情数据确认股票 {stock_code} 已上市")
-                    
-                    # 如果有财务数据，也认为是上市股票
-                    if not is_listed and (financial_indicator or balance_sheet or income or cash_flow):
-                        is_listed = True
-                        print(f"通过财务数据确认股票 {stock_code} 已上市")
-                
-                print(f"最终确认股票 {code_without_market} 是否在A股上市: {is_listed}")
-            except Exception as e:
-                print(f"再次检查股票是否上市出错: {e}")
-                # 如果有价格数据，默认认为是上市股票
-                if daily_data or real_time_quote:
-                    is_listed = True
-                    print(f"通过价格数据确认股票 {stock_code} 已上市")
         
         # 如果不是已上市股票，返回空数据
         if not is_listed:

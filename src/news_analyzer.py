@@ -52,9 +52,9 @@ def analyze_news(news_text):
     # 尝试验证股票代码是否为已上市股票
     try:
         # 获取所有A股股票列表
-        stock_list = ak.stock_zh_a_spot_em()
+        stock_list = ak.stock_info_a_code_name()
         # 检查返回的股票代码是否在列表中
-        if stock_code in stock_list['代码'].values:
+        if stock_code in stock_list['code'].values:
             print(f"验证通过：{stock_code} 是已上市的A股股票")
             return stock_code
         else:
