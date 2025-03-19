@@ -7,11 +7,20 @@ import json
 import os
 import numpy as np
 import random
+import sys
+
+# 获取当前文件的绝对路径，然后获取其上一级目录（项目根目录）
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # 导入自定义模块
 from news_analyzer import analyze_news
 from stock_data import get_stock_data
 from stock_analyzer import analyze_stock
+from dingtalk_bot import DingTalkBot
+from config.config import DINGTALK_WEBHOOK, DINGTALK_SECRET
+
+# 初始化钉钉机器人
+dingtalk_bot = DingTalkBot(DINGTALK_WEBHOOK, DINGTALK_SECRET)
 
 # 设置页面标题和配置
 st.set_page_config(
@@ -304,6 +313,36 @@ if option == "分析新闻数据":
                                     st.markdown('<div class="sell-recommendation">❌ 不建议买入</div>', unsafe_allow_html=True)
                                 elif "建议观望" in analysis_result:
                                     st.markdown('<div class="hold-recommendation">⚠️ 建议观望</div>', unsafe_allow_html=True)
+                                
+                                # 发送到钉钉机器人
+                                title = f"股票分析报告 - {stock_data['basic']['name']}({stock_code})"
+                                # 先处理换行符
+                                formatted_analysis = analysis_result.replace('\n', '\n\n')
+                                content = f'''### {title}
+                                
+#### 新闻内容
+{news_text[:200]}...
+
+#### 基本信息
+- 股票代码：{stock_code}
+- 股票名称：{stock_data['basic']['name']}
+- 所属行业：{stock_data['basic'].get('industry', '未知')}
+- 上市日期：{stock_data['basic'].get('list_date', '未知')}
+
+#### 价格信息
+- 最新收盘价：{stock_data['price'].get('close', '未知')}
+- 涨跌幅：{stock_data['price'].get('pct_chg', '未知')}%
+- 市盈率(PE)：{stock_data['price'].get('pe', '未知')}
+- 市净率(PB)：{stock_data['price'].get('pb', '未知')}
+
+#### 投资分析结果
+{formatted_analysis}
+'''
+                                # 发送消息
+                                if dingtalk_bot.send_markdown(title, content):
+                                    st.success("✅ 分析报告已发送到钉钉群")
+                                else:
+                                    st.error("❌ 发送到钉钉群失败，请检查配置")
     except Exception as e:
         st.error(f"加载新闻数据出错: {e}")
         import traceback
@@ -399,6 +438,36 @@ else:  # 手动输入新闻
                                     st.markdown('<div class="sell-recommendation">❌ 不建议买入</div>', unsafe_allow_html=True)
                                 elif "建议观望" in analysis_result:
                                     st.markdown('<div class="hold-recommendation">⚠️ 建议观望</div>', unsafe_allow_html=True)
+                                
+                                # 发送到钉钉机器人
+                                title = f"股票分析报告 - {stock_data['basic']['name']}({stock_code})"
+                                # 先处理换行符
+                                formatted_analysis = analysis_result.replace('\n', '\n\n')
+                                content = f'''### {title}
+                                
+#### 新闻内容
+{news_text[:200]}...
+
+#### 基本信息
+- 股票代码：{stock_code}
+- 股票名称：{stock_data['basic']['name']}
+- 所属行业：{stock_data['basic'].get('industry', '未知')}
+- 上市日期：{stock_data['basic'].get('list_date', '未知')}
+
+#### 价格信息
+- 最新收盘价：{stock_data['price'].get('close', '未知')}
+- 涨跌幅：{stock_data['price'].get('pct_chg', '未知')}%
+- 市盈率(PE)：{stock_data['price'].get('pe', '未知')}
+- 市净率(PB)：{stock_data['price'].get('pb', '未知')}
+
+#### 投资分析结果
+{formatted_analysis}
+'''
+                                # 发送消息
+                                if dingtalk_bot.send_markdown(title, content):
+                                    st.success("✅ 分析报告已发送到钉钉群")
+                                else:
+                                    st.error("❌ 发送到钉钉群失败，请检查配置")
 
 # 添加页脚
 st.markdown("---")

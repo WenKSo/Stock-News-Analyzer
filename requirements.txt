@@ -1,9 +1,9 @@
 pandas==2.0.3
 schedule==1.2.0
 beautifulsoup4==4.12.2
-requests
+requests>=2.31.0
 akshare
-volcenginesdkarkruntime
+#volcenginesdkarkruntime
 matplotlib
 plotly
 streamlit  # 如果使用方案一

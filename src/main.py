@@ -12,11 +12,16 @@ from news_analyzer import analyze_news
 from stock_data import get_stock_data
 from stock_analyzer import analyze_stock
 from visualization import visualize_stock_data, generate_index_page
+from dingtalk_bot import DingTalkBot
+from config.config import DINGTALK_WEBHOOK, DINGTALK_SECRET
 
 def process_news_data(news_data, output_dir='../output'):
     """处理新闻数据并生成分析报告"""
     # 创建结果列表
     results = []
+    
+    # 初始化钉钉机器人
+    dingtalk_bot = DingTalkBot(DINGTALK_WEBHOOK, DINGTALK_SECRET)
     
     for i, news in enumerate(news_data):
         print(f"\n处理第 {i+1} 条新闻...")
@@ -59,6 +64,32 @@ def process_news_data(news_data, output_dir='../output'):
                 'stock_name': stock_data['basic']['name'],
                 'report_file': report_file
             })
+            
+            # 发送到钉钉机器人
+            # 构建Markdown消息
+            title = f"股票分析报告 - {stock_data['basic']['name']}({stock_code})"
+            content = f"""### {title}
+            
+#### 新闻内容
+{news_text[:200]}...
+
+#### 基本信息
+- 股票代码：{stock_code}
+- 股票名称：{stock_data['basic']['name']}
+- 所属行业：{stock_data['basic'].get('industry', '未知')}
+- 上市日期：{stock_data['basic'].get('list_date', '未知')}
+
+#### 价格信息
+- 最新收盘价：{stock_data['price'].get('close', '未知')}
+- 涨跌幅：{stock_data['price'].get('pct_chg', '未知')}%
+- 市盈率(PE)：{stock_data['price'].get('pe', '未知')}
+- 市净率(PB)：{stock_data['price'].get('pb', '未知')}
+
+#### 投资分析结果
+{analysis_result.replace('\n', '\n\n')}
+"""
+            # 发送消息
+            dingtalk_bot.send_markdown(title, content)
     
     # 生成索引页面
     if results:
