@@ -19,7 +19,49 @@ def get_stock_basic_info(stock_code):
             info = ak.stock_individual_info_em(symbol=code_without_market)
             if not info.empty:
                 print(f"使用stock_individual_info_em成功获取到股票信息: {info.head()}")
-                return ensure_compatible_types(info)
+                
+                # 正确映射字段名称
+                # 检查数据中是否有我们需要的字段
+                has_industry = False
+                has_list_date = False
+                industry_value = '未知'
+                list_date_value = '未知'
+                
+                # 遍历获取到的数据寻找对应字段
+                for _, row in info.iterrows():
+                    item = row['item']
+                    if item == '行业':
+                        has_industry = True
+                        industry_value = row['value']
+                    elif item == '上市时间':
+                        has_list_date = True
+                        # 尝试格式化上市时间
+                        try:
+                            # 如果上市时间是类似"20111216"的数字格式，将其转换为"2011-12-16"格式
+                            list_date_str = str(row['value'])
+                            if len(list_date_str) == 8 and list_date_str.isdigit():
+                                list_date_value = f"{list_date_str[:4]}-{list_date_str[4:6]}-{list_date_str[6:8]}"
+                            else:
+                                list_date_value = list_date_str
+                        except:
+                            list_date_value = str(row['value'])
+                
+                # 如果没有找到需要的字段，则保持原有结构
+                if not (has_industry and has_list_date):
+                    return ensure_compatible_types(info)
+                
+                # 创建一个新的DataFrame，确保包含我们需要的所有字段
+                mapped_info = pd.DataFrame({
+                    'item': ['名称', '所属行业', '上市日期'],
+                    'value': [
+                        info[info['item'] == '股票简称'].iloc[0]['value'] if '股票简称' in info['item'].values else 
+                        (info[info['item'] == '名称'].iloc[0]['value'] if '名称' in info['item'].values else '未知'),
+                        industry_value,
+                        list_date_value
+                    ]
+                })
+                print(f"映射后的股票信息: {mapped_info}")
+                return ensure_compatible_types(mapped_info)
         except Exception as e:
             print(f"使用stock_individual_info_em获取股票信息失败: {e}")
         
@@ -140,15 +182,28 @@ def get_stock_data(stock_code):
         
         # 获取实时行情
         try:
-            real_time_quote = ak.stock_zh_a_spot_em()
-            print(f"查询的股票代码: {code_without_market}")
-            real_time_quote = real_time_quote[real_time_quote['代码'] == code_without_market]
+            # 使用stock_individual_spot_xq获取实时行情
+            # 格式化股票代码为雪球接口所需格式 (SH或SZ + 代码)
+            if formatted_code.startswith('sh'):
+                xq_symbol = f"SH{code_without_market}"
+            elif formatted_code.startswith('sz'):
+                xq_symbol = f"SZ{code_without_market}"
+            else:
+                xq_symbol = code_without_market
+                
+            print(f"查询的股票代码: {code_without_market}, 雪球格式: {xq_symbol}")
+            real_time_quote = ak.stock_individual_spot_xq(symbol=xq_symbol)
             
             if not real_time_quote.empty:
-                real_time_quote = real_time_quote.to_dict('records')[0]
+                # 将DataFrame转换为字典格式
+                real_time_quote_dict = {}
+                for _, row in real_time_quote.iterrows():
+                    real_time_quote_dict[row['item']] = row['value']
+                
+                real_time_quote = real_time_quote_dict
                 print(f"获取到的实时行情: {real_time_quote}")
             else:
-                print(f"未找到股票代码 {code_without_market} 的实时行情")
+                print(f"未找到股票代码 {xq_symbol} 的实时行情")
                 real_time_quote = {}
         except Exception as e:
             print(f"获取实时行情出错: {e}")
@@ -273,10 +328,10 @@ def get_stock_data(stock_code):
         try:
             # 使用实时行情中的估值指标
             valuation = {
-                'pe': real_time_quote.get('市盈率-动态', '未知'),
+                'pe': real_time_quote.get('市盈率(TTM)', real_time_quote.get('市盈率(静)', '未知')),
                 'pb': real_time_quote.get('市净率', '未知'),
-                'total_mv': real_time_quote.get('总市值', '未知'),
-                'circ_mv': real_time_quote.get('流通市值', '未知')
+                'total_mv': real_time_quote.get('资产净值/总市值', real_time_quote.get('市值', '未知')),
+                'circ_mv': real_time_quote.get('流通值', '未知')
             }
             print(f"从实时行情获取的估值指标数据: {valuation}")
         except Exception as e:
@@ -297,12 +352,26 @@ def get_stock_data(stock_code):
         industry_row = stock_info[stock_info['item'] == '所属行业']
         if not industry_row.empty:
             industry = industry_row['value'].values[0]
+        # 如果从基本信息中获取不到行业，尝试从实时行情中获取
+        if industry == '未知' and real_time_quote.get('行业'):
+            industry = real_time_quote.get('行业')
         
         # 获取上市日期
         list_date = '未知'
         list_date_row = stock_info[stock_info['item'] == '上市日期']
         if not list_date_row.empty:
             list_date = list_date_row['value'].values[0]
+        # 如果从基本信息中获取不到上市日期，尝试从实时行情中获取
+        if list_date == '未知' and real_time_quote.get('发行日期'):
+            # 尝试格式化发行日期
+            try:
+                issue_date = real_time_quote.get('发行日期')
+                if issue_date and str(issue_date).isdigit():
+                    # 假设发行日期是毫秒时间戳
+                    from datetime import datetime
+                    list_date = datetime.fromtimestamp(int(issue_date)/1000).strftime('%Y-%m-%d')
+            except:
+                pass
         
         # 检查是否为已上市股票
         is_listed = True
@@ -331,12 +400,32 @@ def get_stock_data(stock_code):
                 'list_date': list_date,
             },
             'price': {
-                'close': daily_data.get('close', real_time_quote.get('最新价', '未知')),
-                'pct_chg': real_time_quote.get('涨跌幅', '未知'),
+                'close': daily_data.get('close', real_time_quote.get('现价', '未知')),
+                'pct_chg': real_time_quote.get('涨幅', '未知'),
+                'change': real_time_quote.get('涨跌', '未知'),
+                'open': real_time_quote.get('今开', '未知'),
+                'high': real_time_quote.get('最高', '未知'),
+                'low': real_time_quote.get('最低', '未知'),
                 'pe': valuation.get('pe', '未知'),
                 'pb': valuation.get('pb', '未知'),
                 'total_mv': valuation.get('total_mv', '未知'),
                 'circ_mv': valuation.get('circ_mv', '未知'),
+                # 添加从雪球获取的额外实时数据 
+                '成交量': real_time_quote.get('成交量', '未知'),
+                '成交额': real_time_quote.get('成交额', '未知'),
+                '52周最高': real_time_quote.get('52周最高', '未知'),
+                '52周最低': real_time_quote.get('52周最低', '未知'),
+                '今年以来涨幅': real_time_quote.get('今年以来涨幅', '未知'),
+                '振幅': real_time_quote.get('振幅', '未知'),
+                '均价': real_time_quote.get('均价', '未知'),
+                '昨收': real_time_quote.get('昨收', '未知'),
+                '交易所': real_time_quote.get('交易所', '未知'),
+                '货币': real_time_quote.get('货币', '未知'),
+                '时间': real_time_quote.get('时间', '未知'),
+                '股息率(TTM)': real_time_quote.get('股息率(TTM)', '未知'),
+                '股息(TTM)': real_time_quote.get('股息(TTM)', '未知'),
+                '周转率': real_time_quote.get('周转率', '未知'),
+                '基金份额/总股本': real_time_quote.get('基金份额/总股本', '未知'),
             },
             'financial_indicator': {
                 'eps': eps_value if financial_indicator else '未知',
