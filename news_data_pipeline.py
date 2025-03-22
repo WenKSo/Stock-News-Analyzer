@@ -125,6 +125,24 @@ class NewsDataPipeline:
         try:
             # 步骤1: 处理新数据
             logger.info("步骤1: 处理新数据")
+            
+            # 添加调试信息 - 检查目录结构
+            logger.info(f"数据输入目录: {self.input_dir} (存在: {os.path.exists(self.input_dir)})")
+            logger.info(f"数据输出目录: {self.output_dir} (存在: {os.path.exists(self.output_dir)})")
+            logger.info(f"数据归档目录: {self.archive_dir} (存在: {os.path.exists(self.archive_dir)})")
+            
+            # 添加调试信息 - 列出目录中的文件
+            if os.path.exists(self.input_dir):
+                all_files = os.listdir(self.input_dir)
+                logger.info(f"输入目录中的所有项: {all_files}")
+                
+                # 检查子目录内容
+                for item in all_files:
+                    item_path = os.path.join(self.input_dir, item)
+                    if os.path.isdir(item_path):
+                        logger.info(f"子目录 {item} 中的文件: {os.listdir(item_path)[:5]}...等")
+            
+            # 处理数据
             self.processor.process()
             
             # 步骤2: 将处理后的数据集成到数据库

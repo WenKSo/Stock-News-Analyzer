@@ -42,9 +42,34 @@ class NewsDataProcessor:
     def get_new_files(self):
         """获取输入目录中尚未处理的新文件"""
         files = []
+        
+        # 原有的非递归搜索
+        logger.info(f"搜索目录: {self.input_dir}")
         for filename in os.listdir(self.input_dir):
-            if filename.endswith('.json') or filename.endswith('.csv'):
-                files.append(os.path.join(self.input_dir, filename))
+            file_path = os.path.join(self.input_dir, filename)
+            # 如果是文件且符合扩展名要求，添加到列表
+            if os.path.isfile(file_path) and (filename.endswith('.json') or filename.endswith('.csv')):
+                files.append(file_path)
+                logger.info(f"找到文件: {file_path}")
+        
+        # 递归搜索子目录
+        for root, dirs, dir_files in os.walk(self.input_dir):
+            # 跳过顶级目录，因为已经在上面处理过了
+            if root == self.input_dir:
+                continue
+                
+            logger.info(f"搜索子目录: {root}")
+            for filename in dir_files:
+                if filename.endswith('.json') or filename.endswith('.csv'):
+                    file_path = os.path.join(root, filename)
+                    files.append(file_path)
+                    logger.info(f"在子目录中找到文件: {file_path}")
+        
+        if not files:
+            logger.info("没有找到任何符合条件的文件")
+        else:
+            logger.info(f"总共找到 {len(files)} 个文件")
+            
         return files
     
     def clean_text(self, text):

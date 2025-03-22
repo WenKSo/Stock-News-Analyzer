@@ -68,6 +68,8 @@ def process_news_data(news_data, output_dir='../output'):
             # 发送到钉钉机器人
             # 构建Markdown消息
             title = f"股票分析报告 - {stock_data['basic']['name']}({stock_code})"
+            # 先处理分析结果中的换行
+            formatted_analysis = analysis_result.replace('\n', '\n\n')
             content = f"""### {title}
             
 #### 新闻内容
@@ -86,7 +88,7 @@ def process_news_data(news_data, output_dir='../output'):
 - 市净率(PB)：{stock_data['price'].get('pb', '未知')}
 
 #### 投资分析结果
-{analysis_result.replace('\n', '\n\n')}
+{formatted_analysis}
 """
             # 发送消息
             dingtalk_bot.send_markdown(title, content)

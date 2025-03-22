@@ -220,10 +220,14 @@ if option == "分析新闻数据":
                                         stock_data['basic']['list_date']
                                     ]
                                 })
-                                st.table(basic_df)
+                                st.table(basic_df.set_index('项目'))
                                 st.markdown('</div>', unsafe_allow_html=True)
                             
-                            # 价格信息表格
+                            # 实时市场数据区域
+                            st.markdown("### 📈 实时市场数据")
+                            col2, col3, col4 = st.columns(3)
+                            
+                            # 价格信息合并到实时市场数据
                             with col2:
                                 st.markdown('<div class="stock-info-card">', unsafe_allow_html=True)
                                 st.markdown("**💰 价格信息**")
@@ -234,55 +238,52 @@ if option == "分析新闻数据":
                                 else:
                                     pct_chg_str = pct_chg
                                 
-                                # 扩展价格信息以包含更多从雪球获取的实时数据
                                 price_df = pd.DataFrame({
-                                    "项目": ["最新价", "涨跌额", "涨跌幅", "今日开盘", "最高价", "最低价", "市盈率(TTM)", "市净率"],
+                                    "项目": ["最新价", "涨跌额", "涨跌幅", "今日开盘", "最高价", "最低价"],
                                     "数值": [
                                         format_value(stock_data['price']['close']),
                                         format_value(stock_data['price']['change']),
                                         pct_chg_str,
                                         format_value(stock_data['price']['open']),
                                         format_value(stock_data['price']['high']),
-                                        format_value(stock_data['price']['low']),
-                                        format_value(stock_data['price']['pe']),
-                                        format_value(stock_data['price']['pb'])
+                                        format_value(stock_data['price']['low'])
                                     ]
                                 })
-                                st.table(price_df)
+                                st.table(price_df.set_index('项目'))
                                 st.markdown('</div>', unsafe_allow_html=True)
-                            
-                            # 添加额外的实时市场数据区域
-                            st.markdown("### 📈 实时市场数据")
-                            col3, col4 = st.columns(2)
                             
                             with col3:
                                 st.markdown('<div class="stock-info-card">', unsafe_allow_html=True)
                                 st.markdown("**🔍 市场表现**")
                                 market_df = pd.DataFrame({
-                                    "项目": ["成交量", "成交额", "市值/资产净值", "流通值"],
+                                    "项目": ["成交量", "成交额", "市盈率(TTM)", "市净率", "市值/资产净值", "流通值"],
                                     "数值": [
                                         format_value(stock_data['price'].get('成交量', '未知')),
                                         format_value(stock_data['price'].get('成交额', '未知')),
+                                        format_value(stock_data['price']['pe']),
+                                        format_value(stock_data['price']['pb']),
                                         format_value(stock_data['price']['total_mv']),
                                         format_value(stock_data['price']['circ_mv'])
                                     ]
                                 })
-                                st.table(market_df)
+                                st.table(market_df.set_index('项目'))
                                 st.markdown('</div>', unsafe_allow_html=True)
                             
                             with col4:
                                 st.markdown('<div class="stock-info-card">', unsafe_allow_html=True)
                                 st.markdown("**📅 52周表现**")
                                 performance_df = pd.DataFrame({
-                                    "项目": ["52周最高", "52周最低", "今年以来涨幅", "振幅"],
+                                    "项目": ["52周最高", "52周最低", "今年以来涨幅", "振幅", "昨收", "周转率"],
                                     "数值": [
                                         format_value(stock_data['price'].get('52周最高', '未知')),
                                         format_value(stock_data['price'].get('52周最低', '未知')),
                                         format_value(stock_data['price'].get('今年以来涨幅', '未知')),
-                                        format_value(stock_data['price'].get('振幅', '未知'))
+                                        format_value(stock_data['price'].get('振幅', '未知')),
+                                        format_value(stock_data['price'].get('昨收', '未知')),
+                                        format_value(stock_data['price'].get('周转率', '未知'))
                                     ]
                                 })
-                                st.table(performance_df)
+                                st.table(performance_df.set_index('项目'))
                                 st.markdown('</div>', unsafe_allow_html=True)
                             
                             # 财务指标可视化
@@ -300,44 +301,11 @@ if option == "分析新闻数据":
                                 ]
                             }
                             
-                            # 转换为数值类型进行绘图
-                            try:
-                                financial_values = []
-                                for val in financial_data["数值"]:
-                                    if isinstance(val, str) and val != '未知':
-                                        # 移除百分号并转换为浮点数
-                                        val = val.replace('%', '')
-                                        try:
-                                            financial_values.append(float(val))
-                                        except ValueError:
-                                            financial_values.append(0)
-                                    elif val == '未知':
-                                        financial_values.append(0)
-                                    else:
-                                        financial_values.append(float(val))
-                                
-                                # 创建条形图
-                                colors = ['#1E88E5', '#43A047', '#FFB300', '#E53935', '#5E35B1']
-                                fig = px.bar(
-                                    x=financial_data["指标"],
-                                    y=financial_values,
-                                    title="关键财务指标",
-                                    labels={"x": "指标", "y": "数值"},
-                                    color=financial_data["指标"],
-                                    color_discrete_sequence=colors
-                                )
-                                fig.update_layout(
-                                    plot_bgcolor='rgba(240,240,240,0.2)',
-                                    paper_bgcolor='rgba(0,0,0,0)',
-                                    font=dict(size=14),
-                                    title_font_size=20
-                                )
-                                st.plotly_chart(fig)
-                            except Exception as e:
-                                st.error(f"创建财务指标图表时出错: {e}")
-                                # 显示原始数据表格
-                                st.write("财务指标原始数据:")
-                                st.dataframe(pd.DataFrame(financial_data))
+                            # 使用表格直接显示财务指标
+                            st.markdown('<div class="stock-info-card">', unsafe_allow_html=True)
+                            financial_df = pd.DataFrame(financial_data)
+                            st.table(financial_df.set_index('指标'))
+                            st.markdown('</div>', unsafe_allow_html=True)
                             
                             # 分析结果
                             with st.spinner("🧠 正在分析股票投资价值..."):
@@ -450,10 +418,14 @@ else:  # 手动输入新闻
                                         stock_data['basic']['list_date']
                                     ]
                                 })
-                                st.table(basic_df)
+                                st.table(basic_df.set_index('项目'))
                                 st.markdown('</div>', unsafe_allow_html=True)
                             
-                            # 价格信息表格
+                            # 实时市场数据区域
+                            st.markdown("### 📈 实时市场数据")
+                            col2, col3, col4 = st.columns(3)
+                            
+                            # 价格信息合并到实时市场数据
                             with col2:
                                 st.markdown('<div class="stock-info-card">', unsafe_allow_html=True)
                                 st.markdown("**💰 价格信息**")
@@ -464,55 +436,52 @@ else:  # 手动输入新闻
                                 else:
                                     pct_chg_str = pct_chg
                                 
-                                # 扩展价格信息以包含更多从雪球获取的实时数据
                                 price_df = pd.DataFrame({
-                                    "项目": ["最新价", "涨跌额", "涨跌幅", "今日开盘", "最高价", "最低价", "市盈率(TTM)", "市净率"],
+                                    "项目": ["最新价", "涨跌额", "涨跌幅", "今日开盘", "最高价", "最低价"],
                                     "数值": [
                                         format_value(stock_data['price']['close']),
                                         format_value(stock_data['price']['change']),
                                         pct_chg_str,
                                         format_value(stock_data['price']['open']),
                                         format_value(stock_data['price']['high']),
-                                        format_value(stock_data['price']['low']),
-                                        format_value(stock_data['price']['pe']),
-                                        format_value(stock_data['price']['pb'])
+                                        format_value(stock_data['price']['low'])
                                     ]
                                 })
-                                st.table(price_df)
+                                st.table(price_df.set_index('项目'))
                                 st.markdown('</div>', unsafe_allow_html=True)
-                            
-                            # 添加额外的实时市场数据区域
-                            st.markdown("### 📈 实时市场数据")
-                            col3, col4 = st.columns(2)
                             
                             with col3:
                                 st.markdown('<div class="stock-info-card">', unsafe_allow_html=True)
                                 st.markdown("**🔍 市场表现**")
                                 market_df = pd.DataFrame({
-                                    "项目": ["成交量", "成交额", "市值/资产净值", "流通值"],
+                                    "项目": ["成交量", "成交额", "市盈率(TTM)", "市净率", "市值/资产净值", "流通值"],
                                     "数值": [
                                         format_value(stock_data['price'].get('成交量', '未知')),
                                         format_value(stock_data['price'].get('成交额', '未知')),
+                                        format_value(stock_data['price']['pe']),
+                                        format_value(stock_data['price']['pb']),
                                         format_value(stock_data['price']['total_mv']),
                                         format_value(stock_data['price']['circ_mv'])
                                     ]
                                 })
-                                st.table(market_df)
+                                st.table(market_df.set_index('项目'))
                                 st.markdown('</div>', unsafe_allow_html=True)
                             
                             with col4:
                                 st.markdown('<div class="stock-info-card">', unsafe_allow_html=True)
                                 st.markdown("**📅 52周表现**")
                                 performance_df = pd.DataFrame({
-                                    "项目": ["52周最高", "52周最低", "今年以来涨幅", "振幅"],
+                                    "项目": ["52周最高", "52周最低", "今年以来涨幅", "振幅", "昨收", "周转率"],
                                     "数值": [
                                         format_value(stock_data['price'].get('52周最高', '未知')),
                                         format_value(stock_data['price'].get('52周最低', '未知')),
                                         format_value(stock_data['price'].get('今年以来涨幅', '未知')),
-                                        format_value(stock_data['price'].get('振幅', '未知'))
+                                        format_value(stock_data['price'].get('振幅', '未知')),
+                                        format_value(stock_data['price'].get('昨收', '未知')),
+                                        format_value(stock_data['price'].get('周转率', '未知'))
                                     ]
                                 })
-                                st.table(performance_df)
+                                st.table(performance_df.set_index('项目'))
                                 st.markdown('</div>', unsafe_allow_html=True)
                             
                             # 财务指标可视化
@@ -530,44 +499,11 @@ else:  # 手动输入新闻
                                 ]
                             }
                             
-                            # 转换为数值类型进行绘图
-                            try:
-                                financial_values = []
-                                for val in financial_data["数值"]:
-                                    if isinstance(val, str) and val != '未知':
-                                        # 移除百分号并转换为浮点数
-                                        val = val.replace('%', '')
-                                        try:
-                                            financial_values.append(float(val))
-                                        except ValueError:
-                                            financial_values.append(0)
-                                    elif val == '未知':
-                                        financial_values.append(0)
-                                    else:
-                                        financial_values.append(float(val))
-                                
-                                # 创建条形图
-                                colors = ['#1E88E5', '#43A047', '#FFB300', '#E53935', '#5E35B1']
-                                fig = px.bar(
-                                    x=financial_data["指标"],
-                                    y=financial_values,
-                                    title="关键财务指标",
-                                    labels={"x": "指标", "y": "数值"},
-                                    color=financial_data["指标"],
-                                    color_discrete_sequence=colors
-                                )
-                                fig.update_layout(
-                                    plot_bgcolor='rgba(240,240,240,0.2)',
-                                    paper_bgcolor='rgba(0,0,0,0)',
-                                    font=dict(size=14),
-                                    title_font_size=20
-                                )
-                                st.plotly_chart(fig)
-                            except Exception as e:
-                                st.error(f"创建财务指标图表时出错: {e}")
-                                # 显示原始数据表格
-                                st.write("财务指标原始数据:")
-                                st.dataframe(pd.DataFrame(financial_data))
+                            # 使用表格直接显示财务指标
+                            st.markdown('<div class="stock-info-card">', unsafe_allow_html=True)
+                            financial_df = pd.DataFrame(financial_data)
+                            st.table(financial_df.set_index('指标'))
+                            st.markdown('</div>', unsafe_allow_html=True)
                             
                             # 分析结果
                             with st.spinner("🧠 正在分析股票投资价值..."):

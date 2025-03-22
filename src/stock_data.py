@@ -230,11 +230,17 @@ def get_stock_data(stock_code):
             print(f"获取财务指标数据出错: {e}")
             # 尝试使用其他API获取财务指标
             try:
-                # 尝试使用财务报表API获取
-                fin_indicator = ak.stock_financial_report_sina(stock=formatted_code, symbol="资产负债表")
+                # 尝试使用财务报表API获取 - 先尝试获取利润表
+                fin_indicator = ak.stock_financial_report_sina(stock=formatted_code, symbol="利润表")
                 if not fin_indicator.empty:
                     financial_indicator = fin_indicator.iloc[0].to_dict()
-                    print(f"使用备选API获取到的财务指标数据: {list(financial_indicator.keys())[:10]}...")
+                    print(f"使用利润表API获取到的财务指标数据: {list(financial_indicator.keys())[:10]}...")
+                else:
+                    # 如果利润表为空，尝试获取资产负债表
+                    fin_indicator = ak.stock_financial_report_sina(stock=formatted_code, symbol="资产负债表")
+                    if not fin_indicator.empty:
+                        financial_indicator = fin_indicator.iloc[0].to_dict()
+                        print(f"使用资产负债表API获取到的财务指标数据: {list(financial_indicator.keys())[:10]}...")
             except Exception as e2:
                 print(f"使用备选API获取财务指标数据也出错: {e2}")
                 print(f"错误详情: {str(e2)}")
@@ -242,28 +248,62 @@ def get_stock_data(stock_code):
         # 打印更多的调试信息
         if financial_indicator:
             print("\n尝试不同的字段名称获取财务指标：")
-            # 每股收益的可能字段名
+            
+            # 每股收益的可能字段名 - 扩展匹配字段
             eps_value = financial_indicator.get('加权每股收益(元)',
-                       financial_indicator.get('摊薄每股收益(元)',
-                       financial_indicator.get('每股收益_调整后(元)',
-                       financial_indicator.get('基本每股收益', '未知'))))
+                      financial_indicator.get('摊薄每股收益(元)',
+                      financial_indicator.get('每股收益_调整后(元)',
+                      financial_indicator.get('基本每股收益',
+                      financial_indicator.get('每股收益',
+                      financial_indicator.get('EPS',
+                      financial_indicator.get('稀释每股收益', '未知')))))))
             
-            # 净资产收益率的可能字段名
+            # 净资产收益率的可能字段名 - 扩展匹配字段
             roe_value = financial_indicator.get('净资产收益率(%)',
-                       financial_indicator.get('加权净资产收益率(%)',
-                       financial_indicator.get('净资产报酬率(%)', '未知')))
+                      financial_indicator.get('加权净资产收益率(%)',
+                      financial_indicator.get('净资产报酬率(%)',
+                      financial_indicator.get('ROE',
+                      financial_indicator.get('净资产收益率', '未知')))))
             
-            # 毛利率的可能字段名
+            # 毛利率的可能字段名 - 扩展匹配字段
             gpm_value = financial_indicator.get('销售毛利率(%)',
-                       financial_indicator.get('主营业务利润率(%)', '未知'))
+                      financial_indicator.get('主营业务利润率(%)',
+                      financial_indicator.get('毛利率',
+                      financial_indicator.get('综合毛利率', '未知'))))
             
-            # 其他关键指标
+            # 其他关键指标 - 扩展匹配字段
             bps_value = financial_indicator.get('每股净资产_调整后(元)',
-                       financial_indicator.get('每股净资产_调整前(元)', '未知'))
+                      financial_indicator.get('每股净资产_调整前(元)',
+                      financial_indicator.get('每股净资产',
+                      financial_indicator.get('BPS', '未知'))))
             
-            npm_value = financial_indicator.get('销售净利率(%)', '未知')
+            npm_value = financial_indicator.get('销售净利率(%)',
+                      financial_indicator.get('净利率(%)',
+                      financial_indicator.get('净利润率',
+                      financial_indicator.get('营业利润率', '未知'))))
             
-            dar_value = financial_indicator.get('资产负债率(%)', '未知')
+            dar_value = financial_indicator.get('资产负债率(%)',
+                      financial_indicator.get('资产负债率',
+                      financial_indicator.get('负债资产比率', '未知')))
+            
+            # 处理特殊情况：金融企业特有的指标
+            if '净息差' in financial_indicator or '资本充足率' in financial_indicator:
+                print("检测到金融企业，使用行业特定指标")
+                # 金融企业特有指标
+                capital_adequacy = financial_indicator.get('资本充足率', 
+                                 financial_indicator.get('核心资本充足率', '未知'))
+                net_interest_margin = financial_indicator.get('净息差', 
+                                    financial_indicator.get('净利息收入/平均生息资产', '未知'))
+                
+                # 将这些特殊指标添加到输出中
+                print(f"资本充足率: {capital_adequacy}")
+                print(f"净息差: {net_interest_margin}")
+                
+                # 银行特有的指标可能会替代一些通用指标
+                if eps_value == '未知':
+                    eps_value = financial_indicator.get('每股收益', '未知')
+                if roe_value == '未知':
+                    roe_value = financial_indicator.get('平均总资产收益率', '未知')
             
             print(f"基本每股收益: {eps_value}")
             print(f"净资产收益率: {roe_value}")
@@ -274,12 +314,12 @@ def get_stock_data(stock_code):
             
             # 更新financial_indicator字典中的值
             financial_indicator.update({
-                '基本每股收益': eps_value if financial_indicator else '未知',
-                '净资产收益率': roe_value if financial_indicator else '未知',
-                '毛利率': gpm_value if financial_indicator else '未知',
-                '每股净资产': bps_value if financial_indicator else '未知',
-                '净利率': npm_value if financial_indicator else '未知',
-                '资产负债率': dar_value if financial_indicator else '未知',
+                '基本每股收益': eps_value if eps_value != '未知' else '未知',
+                '净资产收益率': roe_value if roe_value != '未知' else '未知',
+                '毛利率': gpm_value if gpm_value != '未知' else '未知',
+                '每股净资产': bps_value if bps_value != '未知' else '未知',
+                '净利率': npm_value if npm_value != '未知' else '未知',
+                '资产负债率': dar_value if dar_value != '未知' else '未知',
             })
         else:
             print("未能获取到任何财务指标数据")
@@ -368,7 +408,6 @@ def get_stock_data(stock_code):
                 issue_date = real_time_quote.get('发行日期')
                 if issue_date and str(issue_date).isdigit():
                     # 假设发行日期是毫秒时间戳
-                    from datetime import datetime
                     list_date = datetime.fromtimestamp(int(issue_date)/1000).strftime('%Y-%m-%d')
             except:
                 pass

@@ -194,7 +194,55 @@ def generate_index_page(results, output_dir='../output'):
     """
     if not results:
         return None
+    
+    index_file = f"{output_dir}/index.html"
+    existing_records = []
+    
+    # 获取当前output目录中所有HTML报告文件
+    all_html_files = []
+    try:
+        for filename in os.listdir(output_dir):
+            if filename.endswith('.html') and filename != 'index.html':
+                # 分析文件名，提取股票代码和时间戳
+                parts = filename.split('_')
+                if len(parts) >= 3:
+                    stock_code = parts[0]
+                    # 提取时间戳信息
+                    date_part = parts[-2] if len(parts) >= 2 else ""
+                    time_part = parts[-1].replace('.html', '') if len(parts) >= 1 else ""
+                    
+                    if len(date_part) == 8 and len(time_part) == 6:  # 确保格式为YYYYMMDD_HHMMSS
+                        timestamp = f"{date_part[:4]}-{date_part[4:6]}-{date_part[6:]} {time_part[:2]}:{time_part[2:4]}:{time_part[4:]}"
+                    else:
+                        timestamp = ""
+                    
+                    # 尝试从文件中提取股票名称
+                    stock_name = ""
+                    try:
+                        with open(os.path.join(output_dir, filename), 'r', encoding='utf-8') as f:
+                            content = f.read()
+                            # 简单从HTML标题中提取股票名称
+                            import re
+                            name_match = re.search(r'<h2>([^(]+)', content)
+                            if name_match:
+                                stock_name = name_match.group(1).strip()
+                    except:
+                        stock_name = f"{stock_code}股票"
+                    
+                    # 如果当前处理的文件不在新结果中，则添加到existing_records
+                    if not any(os.path.basename(result['report_file']) == filename for result in results):
+                        existing_records.append({
+                            'news_index': 999,  # 给旧记录一个大索引号
+                            'stock_code': stock_code,
+                            'stock_name': stock_name,
+                            'report_filename': filename,
+                            'timestamp': timestamp
+                        })
         
+        print(f"在output目录中找到 {len(existing_records)} 个现有报告文件")
+    except Exception as e:
+        print(f"读取output目录出错: {e}")
+    
     # 使用普通字符串和format方法
     index_html = """
     <!DOCTYPE html>
@@ -214,36 +262,88 @@ def generate_index_page(results, output_dir='../output'):
     <body>
         <div class="container">
             <h1>股票分析报告索引</h1>
-            <p>生成时间: {timestamp}</p>
+            <p>最近更新时间: {timestamp}</p>
+            <p>共 {total_reports} 条分析报告</p>
             <table>
                 <tr>
-                    <th>新闻序号</th>
+                    <th>序号</th>
                     <th>股票代码</th>
                     <th>股票名称</th>
                     <th>报告链接</th>
+                    <th>生成时间</th>
                 </tr>
     """
     
     # 格式化时间戳
     formatted_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    index_html = index_html.format(timestamp=formatted_timestamp)
     
-    # 添加每个结果的行
+    # 合并现有记录和新记录
+    combined_records = []
+    
+    # 添加现有记录
+    for record in existing_records:
+        combined_records.append({
+            'news_index': record.get('news_index', 999),
+            'stock_code': record.get('stock_code', ''),
+            'stock_name': record.get('stock_name', ''),
+            'report_filename': record.get('report_filename', ''),
+            'timestamp': record.get('timestamp', '')
+        })
+    
+    # 添加新记录
     for result in results:
         report_filename = os.path.basename(result['report_file'])
+        # 从文件名中提取时间戳 (格式: stock_code_YYYYMMDD_HHMMSS.html)
+        timestamp_parts = report_filename.split('_')
+        if len(timestamp_parts) >= 3:
+            date_part = timestamp_parts[-2]
+            time_part = timestamp_parts[-1].replace('.html', '')
+            report_timestamp = f"{date_part[:4]}-{date_part[4:6]}-{date_part[6:]} {time_part[:2]}:{time_part[2:4]}:{time_part[4:]}"
+        else:
+            report_timestamp = formatted_timestamp
+            
+        combined_records.append({
+            'news_index': result.get('news_index', 0) + 1,
+            'stock_code': result.get('stock_code', ''),
+            'stock_name': result.get('stock_name', ''),
+            'report_filename': report_filename,
+            'timestamp': report_timestamp
+        })
+    
+    # 去除重复记录（以股票代码和报告文件名为依据）
+    unique_records = []
+    seen = set()
+    for record in combined_records:
+        key = f"{record['stock_code']}_{record['report_filename']}"
+        if key not in seen and record['report_filename']:
+            seen.add(key)
+            unique_records.append(record)
+    
+    # 按时间戳排序，最新的在前面
+    unique_records.sort(key=lambda x: (x.get('timestamp', '')), reverse=True)
+    
+    index_html = index_html.format(
+        timestamp=formatted_timestamp,
+        total_reports=len(unique_records)
+    )
+    
+    # 添加每个结果的行
+    for i, record in enumerate(unique_records):
         row_html = """
                 <tr>
-                    <td>{news_index}</td>
+                    <td>{index}</td>
                     <td>{stock_code}</td>
                     <td>{stock_name}</td>
                     <td><a href="{report_filename}" target="_blank">查看报告</a></td>
+                    <td>{timestamp}</td>
                 </tr>
         """
         index_html += row_html.format(
-            news_index=result['news_index'] + 1,
-            stock_code=result['stock_code'],
-            stock_name=result['stock_name'],
-            report_filename=report_filename
+            index=i + 1,
+            stock_code=record.get('stock_code', ''),
+            stock_name=record.get('stock_name', ''),
+            report_filename=record.get('report_filename', ''),
+            timestamp=record.get('timestamp', '')
         )
     
     # 添加HTML结束标签
@@ -255,9 +355,8 @@ def generate_index_page(results, output_dir='../output'):
     """
     
     # 保存索引页面
-    index_file = f"{output_dir}/index.html"
     with open(index_file, 'w', encoding='utf-8') as f:
         f.write(index_html)
     
-    print(f"已生成报告索引页: {index_file}")
+    print(f"已生成报告索引页: {index_file}，包含 {len(unique_records)} 条记录")
     return index_file 

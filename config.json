@@ -5,7 +5,7 @@
         "archive_dir": "data/archive"
     },
     "processing": {
-        "interval_minutes": 10,
+        "interval_minutes": 1,
         "run_continuously": true
     },
     "data_cleaning": {
@@ -17,5 +17,10 @@
         "target_db_file": "news_database.db",
         "table_name": "news_articles"
     },
-    "output_json_file": "data/news_data.json"
+    "output_json_file": "data/news_data.json",
+    "watcher": {
+        "enabled": true,
+        "check_interval_seconds": 30,
+        "processed_records_file": "data/processed_records.json"
+    }
 } 

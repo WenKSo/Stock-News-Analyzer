@@ -8,3 +8,4 @@ matplotlib
 plotly
 streamlit  # 如果使用方案一
 flask  # 如果使用方案一的替代方案
+watchdog==3.0.0  # 用于文件系统监控
