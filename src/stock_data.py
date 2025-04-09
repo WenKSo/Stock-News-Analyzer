@@ -245,84 +245,93 @@ def get_stock_data(stock_code):
                 print(f"使用备选API获取财务指标数据也出错: {e2}")
                 print(f"错误详情: {str(e2)}")
                 
-        # 打印更多的调试信息
+        # 创建一个函数来获取财务指标值，使用多个可能的字段名称
+        def get_financial_value(data_dict, possible_keys, default='未知'):
+            for key in possible_keys:
+                if key in data_dict:
+                    return data_dict[key]
+            return default
+        
+        # 整理财务指标 - 使用字典映射更系统化地处理
+        financial_metrics = {}
         if financial_indicator:
-            print("\n尝试不同的字段名称获取财务指标：")
-            
-            # 每股收益的可能字段名 - 扩展匹配字段
-            eps_value = financial_indicator.get('加权每股收益(元)',
-                      financial_indicator.get('摊薄每股收益(元)',
-                      financial_indicator.get('每股收益_调整后(元)',
-                      financial_indicator.get('基本每股收益',
-                      financial_indicator.get('每股收益',
-                      financial_indicator.get('EPS',
-                      financial_indicator.get('稀释每股收益', '未知')))))))
-            
-            # 净资产收益率的可能字段名 - 扩展匹配字段
-            roe_value = financial_indicator.get('净资产收益率(%)',
-                      financial_indicator.get('加权净资产收益率(%)',
-                      financial_indicator.get('净资产报酬率(%)',
-                      financial_indicator.get('ROE',
-                      financial_indicator.get('净资产收益率', '未知')))))
-            
-            # 毛利率的可能字段名 - 扩展匹配字段
-            gpm_value = financial_indicator.get('销售毛利率(%)',
-                      financial_indicator.get('主营业务利润率(%)',
-                      financial_indicator.get('毛利率',
-                      financial_indicator.get('综合毛利率', '未知'))))
-            
-            # 其他关键指标 - 扩展匹配字段
-            bps_value = financial_indicator.get('每股净资产_调整后(元)',
-                      financial_indicator.get('每股净资产_调整前(元)',
-                      financial_indicator.get('每股净资产',
-                      financial_indicator.get('BPS', '未知'))))
-            
-            npm_value = financial_indicator.get('销售净利率(%)',
-                      financial_indicator.get('净利率(%)',
-                      financial_indicator.get('净利润率',
-                      financial_indicator.get('营业利润率', '未知'))))
-            
-            dar_value = financial_indicator.get('资产负债率(%)',
-                      financial_indicator.get('资产负债率',
-                      financial_indicator.get('负债资产比率', '未知')))
-            
-            # 处理特殊情况：金融企业特有的指标
-            if '净息差' in financial_indicator or '资本充足率' in financial_indicator:
-                print("检测到金融企业，使用行业特定指标")
-                # 金融企业特有指标
-                capital_adequacy = financial_indicator.get('资本充足率', 
-                                 financial_indicator.get('核心资本充足率', '未知'))
-                net_interest_margin = financial_indicator.get('净息差', 
-                                    financial_indicator.get('净利息收入/平均生息资产', '未知'))
+            # 基本财务指标映射表
+            financial_metrics_mapping = {
+                # 收益能力指标
+                'eps': ['加权每股收益(元)', '摊薄每股收益(元)', '每股收益_调整后(元)', '基本每股收益', '每股收益', 'EPS', '稀释每股收益'],
+                'diluted_eps': ['稀释每股收益', '稀释每股收益(元)'],
+                'adjusted_eps': ['扣除非经常性损益后的每股收益(元)', '扣非每股收益'],
+                'roe': ['净资产收益率(%)', '加权净资产收益率(%)', '净资产报酬率(%)', 'ROE', '净资产收益率'],
+                'weighted_roe': ['加权净资产收益率(%)', '加权平均净资产收益率'],
+                'gross_profit_margin': ['销售毛利率(%)', '主营业务利润率(%)', '毛利率', '综合毛利率'],
+                'net_profit_margin': ['销售净利率(%)', '净利率(%)', '净利润率', '营业利润率'],
                 
-                # 将这些特殊指标添加到输出中
-                print(f"资本充足率: {capital_adequacy}")
-                print(f"净息差: {net_interest_margin}")
+                # 每股指标
+                'bps': ['每股净资产_调整后(元)', '每股净资产_调整前(元)', '每股净资产', 'BPS'],
+                'ocf_per_share': ['每股经营性现金流(元)', '每股经营活动产生的现金流量净额', '每股现金流量净额'],
+                'capital_reserve_per_share': ['每股资本公积金(元)', '每股资本公积'],
+                'undistributed_profit_per_share': ['每股未分配利润(元)', '每股未分配利润'],
                 
-                # 银行特有的指标可能会替代一些通用指标
-                if eps_value == '未知':
-                    eps_value = financial_indicator.get('每股收益', '未知')
-                if roe_value == '未知':
-                    roe_value = financial_indicator.get('平均总资产收益率', '未知')
+                # 盈利能力
+                'rop': ['总资产报酬率(%)', '总资产利润率(%)', '资产报酬率(%)'],
+                'operating_profit_ratio': ['营业利润率(%)', '经营利润率'],
+                'cost_profit_ratio': ['成本费用利润率(%)', '成本费用利润率'],
+                
+                # 成长能力
+                'revenue_growth': ['主营业务收入增长率(%)', '营业收入增长率', '营收增长率'],
+                'profit_growth': ['净利润增长率(%)', '净利润增长率'],
+                'asset_growth': ['总资产增长率(%)', '资产增长率'],
+                'equity_growth': ['净资产增长率(%)', '股东权益增长率'],
+                
+                # 营运能力
+                'ar_turnover': ['应收账款周转率(次)', '应收账款周转率'],
+                'ar_turnover_days': ['应收账款周转天数(天)', '应收账款周转天数'],
+                'inventory_turnover': ['存货周转率(次)', '存货周转率'],
+                'inventory_turnover_days': ['存货周转天数(天)', '存货周转天数'],
+                'fixed_asset_turnover': ['固定资产周转率(次)', '固定资产周转率'],
+                'total_asset_turnover': ['总资产周转率(次)', '总资产周转率'],
+                
+                # 偿债能力
+                'current_ratio': ['流动比率', '流动比率(倍)'],
+                'quick_ratio': ['速动比率', '速动比率(倍)'],
+                'cash_ratio': ['现金比率(%)', '现金比率'],
+                'debt_to_assets': ['资产负债率(%)', '资产负债率', '负债资产比率', '总资产负债率'],
+                'equity_ratio': ['股东权益比率(%)', '净资产负债率', '所有者权益比率'],
+                'debt_to_equity': ['负债与所有者权益比率(%)', '产权比率(%)', '资产负债率'],
+                
+                # 现金流指标
+                'ocf_to_sales': ['经营现金净流量对销售收入比率(%)', '销售现金比率'],
+                'ocf_to_profit': ['经营现金净流量与净利润的比率(%)', '现金净流量与净利润比率'],
+                'ocf_to_debt': ['经营现金净流量对负债比率(%)', '现金流量债务比'],
+                
+                # 特殊金融企业指标
+                'capital_adequacy': ['资本充足率', '核心资本充足率', '资本充足率(%)'],
+                'net_interest_margin': ['净息差', '净利息收入/平均生息资产', '净利息收入比率']
+            }
             
-            print(f"基本每股收益: {eps_value}")
-            print(f"净资产收益率: {roe_value}")
-            print(f"毛利率: {gpm_value}")
-            print(f"每股净资产: {bps_value}")
-            print(f"销售净利率: {npm_value}")
-            print(f"资产负债率: {dar_value}")
-            
-            # 更新financial_indicator字典中的值
-            financial_indicator.update({
-                '基本每股收益': eps_value if eps_value != '未知' else '未知',
-                '净资产收益率': roe_value if roe_value != '未知' else '未知',
-                '毛利率': gpm_value if gpm_value != '未知' else '未知',
-                '每股净资产': bps_value if bps_value != '未知' else '未知',
-                '净利率': npm_value if npm_value != '未知' else '未知',
-                '资产负债率': dar_value if dar_value != '未知' else '未知',
-            })
+            # 遍历映射表并提取数据
+            for metric_key, possible_field_names in financial_metrics_mapping.items():
+                value = get_financial_value(financial_indicator, possible_field_names)
+                financial_metrics[metric_key] = value
+                print(f"{metric_key}: {value}")
+                
+            print("\n提取后的关键财务指标:")
+            for k, v in financial_metrics.items():
+                print(f"{k}: {v}")
         else:
             print("未能获取到任何财务指标数据")
+            # 初始化所有指标为"未知"
+            for metric_key in ['eps', 'diluted_eps', 'adjusted_eps', 'roe', 'weighted_roe', 
+                            'gross_profit_margin', 'net_profit_margin', 'bps', 'ocf_per_share',
+                            'capital_reserve_per_share', 'undistributed_profit_per_share',
+                            'rop', 'operating_profit_ratio', 'cost_profit_ratio',
+                            'revenue_growth', 'profit_growth', 'asset_growth', 'equity_growth',
+                            'ar_turnover', 'ar_turnover_days', 'inventory_turnover', 
+                            'inventory_turnover_days', 'fixed_asset_turnover', 'total_asset_turnover',
+                            'current_ratio', 'quick_ratio', 'cash_ratio', 'debt_to_assets',
+                            'equity_ratio', 'debt_to_equity', 'ocf_to_sales', 'ocf_to_profit',
+                            'ocf_to_debt', 'capital_adequacy', 'net_interest_margin']:
+                financial_metrics[metric_key] = '未知'
         
         # 获取资产负债表数据
         balance_sheet = {}
@@ -466,14 +475,7 @@ def get_stock_data(stock_code):
                 '周转率': real_time_quote.get('周转率', '未知'),
                 '基金份额/总股本': real_time_quote.get('基金份额/总股本', '未知'),
             },
-            'financial_indicator': {
-                'eps': eps_value if financial_indicator else '未知',
-                'roe': roe_value if financial_indicator else '未知',
-                'bps': bps_value if financial_indicator else '未知',
-                'grossprofit_margin': gpm_value if financial_indicator else '未知',
-                'netprofit_margin': npm_value if financial_indicator else '未知',
-                'debt_to_assets': dar_value if financial_indicator else '未知',
-            },
+            'financial_indicator': financial_metrics,
             'balance_sheet': {
                 'total_assets': balance_sheet.get('资产总计' if '资产总计' in balance_sheet else '资产总额', balance_sheet.get('总资产', '未知')),
                 'total_liab': balance_sheet.get('负债合计' if '负债合计' in balance_sheet else '负债总额', balance_sheet.get('总负债', '未知')),

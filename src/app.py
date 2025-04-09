@@ -181,26 +181,32 @@ if option == "分析新闻数据":
         if st.button("🔍 分析该新闻"):
             with st.spinner("🔄 正在分析新闻并提取相关股票..."):
                 news_text = selected_news.get('content', '')
-                stock_codes = analyze_news(news_text)
+                result = analyze_news(news_text)
                 
-                if stock_codes == "无相关上市公司":
+                if not result["analyze"]:
+                    st.warning(f"⚠️ 新闻重要性等级为{result['importance_level']}（{result['importance_category']}），不进行分析")
+                elif result["stock_code"] == "无相关上市公司":
                     st.warning("⚠️ 该新闻没有相关的已上市公司")
+                    # 显示行业信息
+                    if result["industry_info"]:
+                        st.info(f"📊 所属行业: {result['industry_info']['main_category']} - {result['industry_info']['sub_category']} (相关度: {result['industry_info']['relevance_score']})")
                 else:
-                    st.success(f"✅ 找到相关股票代码: {stock_codes}")
+                    # 显示分析结果
+                    importance_level = result["importance_level"]
+                    importance_category = result["importance_category"]
+                    industry_info = result["industry_info"]
+                    stock_code = result["stock_code"]
                     
-                    # 处理可能的多个股票代码
-                    for stock_code in stock_codes.split(','):
-                        stock_code = stock_code.strip()
-                        if not stock_code:
-                            continue
+                    st.success(f"✅ 找到相关股票代码: {stock_code}")
+                    st.info(f"📊 新闻重要性: {importance_level}级 ({importance_category})")
+                    st.info(f"📊 所属行业: {industry_info['main_category']} - {industry_info['sub_category']} (相关度: {industry_info['relevance_score']})")
+                    
+                    with st.spinner(f"🔄 正在获取股票 {stock_code} 的数据..."):
+                        stock_data = get_stock_data(stock_code)
                         
-                        with st.spinner(f"🔄 正在获取股票 {stock_code} 的数据..."):
-                            stock_data = get_stock_data(stock_code)
-                            
-                            if not stock_data or not stock_data.get('basic', {}).get('name', ''):
-                                st.error(f"❌ 未能获取到股票 {stock_code} 的有效数据")
-                                continue
-                            
+                        if not stock_data or not stock_data.get('basic', {}).get('name', ''):
+                            st.error(f"❌ 未能获取到股票 {stock_code} 的有效数据")
+                        else:
                             # 显示股票基本信息
                             st.markdown(f'<h3 class="sub-header">🏢 股票信息: {stock_data["basic"]["name"]} ({stock_code})</h3>', unsafe_allow_html=True)
                             
@@ -291,15 +297,40 @@ if option == "分析新闻数据":
                             
                             # 创建财务指标数据
                             financial_data = {
-                                "指标": ["每股收益(EPS)", "净资产收益率(ROE)", "毛利率", "净利率", "资产负债率"],
+                                "指标": [
+                                    "每股收益(EPS)", 
+                                    "净资产收益率(ROE)", 
+                                    "毛利率", 
+                                    "净利率", 
+                                    "资产负债率",
+                                    "每股净资产",
+                                    "营业收入增长率",
+                                    "净利润增长率",
+                                    "流动比率",
+                                    "速动比率"
+                                ],
                                 "数值": [
-                                    format_value(stock_data['financial_indicator']['eps']),
-                                    format_value(stock_data['financial_indicator']['roe']),
-                                    format_value(stock_data['financial_indicator']['grossprofit_margin']),
-                                    format_value(stock_data['financial_indicator']['netprofit_margin']),
-                                    format_value(stock_data['financial_indicator']['debt_to_assets'])
+                                    format_value(stock_data['financial_indicator'].get('eps', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('roe', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('gross_profit_margin', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('net_profit_margin', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('debt_to_assets', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('bps', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('revenue_growth', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('profit_growth', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('current_ratio', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('quick_ratio', '未知'))
                                 ]
                             }
+                            
+                            # 检查是否为金融企业（存在金融特有指标）
+                            if stock_data['financial_indicator'].get('capital_adequacy', '未知') != '未知' or \
+                               stock_data['financial_indicator'].get('net_interest_margin', '未知') != '未知':
+                                financial_data["指标"].extend(["资本充足率", "净息差"])
+                                financial_data["数值"].extend([
+                                    format_value(stock_data['financial_indicator'].get('capital_adequacy', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('net_interest_margin', '未知'))
+                                ])
                             
                             # 使用表格直接显示财务指标
                             st.markdown('<div class="stock-info-card">', unsafe_allow_html=True)
@@ -379,26 +410,32 @@ else:  # 手动输入新闻
             st.warning("⚠️ 请输入新闻内容")
         else:
             with st.spinner("🔄 正在分析新闻并提取相关股票..."):
-                stock_codes = analyze_news(news_text)
+                result = analyze_news(news_text)
                 
-                if stock_codes == "无相关上市公司":
+                if not result["analyze"]:
+                    st.warning(f"⚠️ 新闻重要性等级为{result['importance_level']}（{result['importance_category']}），不进行分析")
+                elif result["stock_code"] == "无相关上市公司":
                     st.warning("⚠️ 该新闻没有相关的已上市公司")
+                    # 显示行业信息
+                    if result["industry_info"]:
+                        st.info(f"📊 所属行业: {result['industry_info']['main_category']} - {result['industry_info']['sub_category']} (相关度: {result['industry_info']['relevance_score']})")
                 else:
-                    st.success(f"✅ 找到相关股票代码: {stock_codes}")
+                    # 显示分析结果
+                    importance_level = result["importance_level"]
+                    importance_category = result["importance_category"]
+                    industry_info = result["industry_info"]
+                    stock_code = result["stock_code"]
                     
-                    # 处理可能的多个股票代码
-                    for stock_code in stock_codes.split(','):
-                        stock_code = stock_code.strip()
-                        if not stock_code:
-                            continue
+                    st.success(f"✅ 找到相关股票代码: {stock_code}")
+                    st.info(f"📊 新闻重要性: {importance_level}级 ({importance_category})")
+                    st.info(f"📊 所属行业: {industry_info['main_category']} - {industry_info['sub_category']} (相关度: {industry_info['relevance_score']})")
+                    
+                    with st.spinner(f"🔄 正在获取股票 {stock_code} 的数据..."):
+                        stock_data = get_stock_data(stock_code)
                         
-                        with st.spinner(f"🔄 正在获取股票 {stock_code} 的数据..."):
-                            stock_data = get_stock_data(stock_code)
-                            
-                            if not stock_data or not stock_data.get('basic', {}).get('name', ''):
-                                st.error(f"❌ 未能获取到股票 {stock_code} 的有效数据")
-                                continue
-                            
+                        if not stock_data or not stock_data.get('basic', {}).get('name', ''):
+                            st.error(f"❌ 未能获取到股票 {stock_code} 的有效数据")
+                        else:
                             # 显示股票基本信息
                             st.markdown(f'<h3 class="sub-header">🏢 股票信息: {stock_data["basic"]["name"]} ({stock_code})</h3>', unsafe_allow_html=True)
                             
@@ -489,15 +526,40 @@ else:  # 手动输入新闻
                             
                             # 创建财务指标数据
                             financial_data = {
-                                "指标": ["每股收益(EPS)", "净资产收益率(ROE)", "毛利率", "净利率", "资产负债率"],
+                                "指标": [
+                                    "每股收益(EPS)", 
+                                    "净资产收益率(ROE)", 
+                                    "毛利率", 
+                                    "净利率", 
+                                    "资产负债率",
+                                    "每股净资产",
+                                    "营业收入增长率",
+                                    "净利润增长率",
+                                    "流动比率",
+                                    "速动比率"
+                                ],
                                 "数值": [
-                                    format_value(stock_data['financial_indicator']['eps']),
-                                    format_value(stock_data['financial_indicator']['roe']),
-                                    format_value(stock_data['financial_indicator']['grossprofit_margin']),
-                                    format_value(stock_data['financial_indicator']['netprofit_margin']),
-                                    format_value(stock_data['financial_indicator']['debt_to_assets'])
+                                    format_value(stock_data['financial_indicator'].get('eps', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('roe', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('gross_profit_margin', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('net_profit_margin', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('debt_to_assets', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('bps', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('revenue_growth', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('profit_growth', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('current_ratio', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('quick_ratio', '未知'))
                                 ]
                             }
+                            
+                            # 检查是否为金融企业（存在金融特有指标）
+                            if stock_data['financial_indicator'].get('capital_adequacy', '未知') != '未知' or \
+                               stock_data['financial_indicator'].get('net_interest_margin', '未知') != '未知':
+                                financial_data["指标"].extend(["资本充足率", "净息差"])
+                                financial_data["数值"].extend([
+                                    format_value(stock_data['financial_indicator'].get('capital_adequacy', '未知')),
+                                    format_value(stock_data['financial_indicator'].get('net_interest_margin', '未知'))
+                                ])
                             
                             # 使用表格直接显示财务指标
                             st.markdown('<div class="stock-info-card">', unsafe_allow_html=True)

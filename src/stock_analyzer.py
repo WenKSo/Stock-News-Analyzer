@@ -49,8 +49,8 @@ def analyze_stock(news_text, stock_data):
     每股收益(EPS)：{stock_data.get('financial_indicator', {}).get('eps', '未知')}
     净资产收益率(ROE)：{stock_data.get('financial_indicator', {}).get('roe', '未知')}
     每股净资产：{stock_data.get('financial_indicator', {}).get('bps', '未知')}
-    毛利率：{stock_data.get('financial_indicator', {}).get('grossprofit_margin', '未知')}%
-    净利率：{stock_data.get('financial_indicator', {}).get('netprofit_margin', '未知')}%
+    毛利率：{stock_data.get('financial_indicator', {}).get('gross_profit_margin', '未知')}%
+    净利率：{stock_data.get('financial_indicator', {}).get('net_profit_margin', '未知')}%
     资产负债率：{stock_data.get('financial_indicator', {}).get('debt_to_assets', '未知')}%
     
     5. 资产负债情况（简要参考）：

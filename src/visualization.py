@@ -134,12 +134,12 @@ def visualize_stock_data(stock_data, news_text, analysis_result, output_dir='../
         pb=stock_data['price']['pb'],
         total_mv=stock_data['price']['total_mv'],
         circ_mv=stock_data['price']['circ_mv'],
-        eps=stock_data['financial_indicator']['eps'],
-        roe=stock_data['financial_indicator']['roe'],
-        bps=stock_data['financial_indicator']['bps'],
-        grossprofit_margin=stock_data['financial_indicator']['grossprofit_margin'],
-        netprofit_margin=stock_data['financial_indicator']['netprofit_margin'],
-        debt_to_assets=stock_data['financial_indicator']['debt_to_assets'],
+        eps=stock_data['financial_indicator'].get('eps', '未知'),
+        roe=stock_data['financial_indicator'].get('roe', '未知'),
+        bps=stock_data['financial_indicator'].get('bps', '未知'),
+        grossprofit_margin=stock_data['financial_indicator'].get('gross_profit_margin', '未知'),
+        netprofit_margin=stock_data['financial_indicator'].get('net_profit_margin', '未知'),
+        debt_to_assets=stock_data['financial_indicator'].get('debt_to_assets', '未知'),
         img_timestamp=timestamp,
         analysis_html=analysis_html,
         recommendation_class=recommendation_class,
@@ -156,11 +156,11 @@ def visualize_stock_data(stock_data, news_text, analysis_result, output_dir='../
         # 准备数据
         indicators = ["EPS", "ROE", "毛利率", "净利率", "资产负债率"]
         values = [
-            float(str(stock_data['financial_indicator']['eps']).replace('%', '')) if stock_data['financial_indicator']['eps'] != '未知' else 0,
-            float(str(stock_data['financial_indicator']['roe']).replace('%', '')) if stock_data['financial_indicator']['roe'] != '未知' else 0,
-            float(str(stock_data['financial_indicator']['grossprofit_margin']).replace('%', '')) if stock_data['financial_indicator']['grossprofit_margin'] != '未知' else 0,
-            float(str(stock_data['financial_indicator']['netprofit_margin']).replace('%', '')) if stock_data['financial_indicator']['netprofit_margin'] != '未知' else 0,
-            float(str(stock_data['financial_indicator']['debt_to_assets']).replace('%', '')) if stock_data['financial_indicator']['debt_to_assets'] != '未知' else 0
+            float(str(stock_data['financial_indicator'].get('eps', '未知')).replace('%', '')) if stock_data['financial_indicator'].get('eps', '未知') != '未知' else 0,
+            float(str(stock_data['financial_indicator'].get('roe', '未知')).replace('%', '')) if stock_data['financial_indicator'].get('roe', '未知') != '未知' else 0,
+            float(str(stock_data['financial_indicator'].get('gross_profit_margin', '未知')).replace('%', '')) if stock_data['financial_indicator'].get('gross_profit_margin', '未知') != '未知' else 0,
+            float(str(stock_data['financial_indicator'].get('net_profit_margin', '未知')).replace('%', '')) if stock_data['financial_indicator'].get('net_profit_margin', '未知') != '未知' else 0,
+            float(str(stock_data['financial_indicator'].get('debt_to_assets', '未知')).replace('%', '')) if stock_data['financial_indicator'].get('debt_to_assets', '未知') != '未知' else 0
         ]
         
         # 创建图表
